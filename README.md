@@ -11,7 +11,6 @@
 ```bash
 # Clone the repository
 git clone <your-repo-url>
-cd hono-vite-pnpm-starter
 
 # Install dependencies
 pnpm install

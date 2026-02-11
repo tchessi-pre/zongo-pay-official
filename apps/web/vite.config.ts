@@ -1,17 +1,69 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react-swc";
+import path from "path";
+import { VitePWA } from "vite-plugin-pwa";
 
-export default defineConfig({
-  plugins: [react()],
+// https://vitejs.dev/config/
+export default defineConfig(({ mode }) => ({
   server: {
-    port: 5173,
-    strictPort: true,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:8787',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
+    host: "::",
+    port: 8080,
+  },
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.ico', 'robots.txt', 'zongo-icon-512.png'],
+      manifest: {
+        name: 'Zongo Pay',
+        short_name: 'Zongo Pay',
+        description: 'Le paiement à visage humain - Envoie, reçois et épargne avec ta communauté',
+        theme_color: '#FF8C42',
+        background_color: '#F8F1E7',
+        display: 'standalone',
+        orientation: 'portrait',
+        start_url: '/',
+        lang: 'fr',
+        icons: [
+          {
+            src: 'zongo-icon-192.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: 'zongo-icon-512.png',
+            sizes: '512x512',
+            type: 'image/png'
+          },
+          {
+            src: 'zongo-icon-512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable'
+          }
+        ]
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'google-fonts-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365
+              }
+            }
+          }
+        ]
       }
-    }
-  }
-})
+    })
+  ].filter(Boolean),
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
+}));
