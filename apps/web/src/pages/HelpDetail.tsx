@@ -1,13 +1,13 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, CheckCircle2, AlertCircle, Info } from "lucide-react";
+import { ArrowLeft, CheckCircle2, AlertCircle, Info, type LucideIcon } from "lucide-react";
 
 const HelpDetail = () => {
   const navigate = useNavigate();
   const { category } = useParams();
 
-  const helpContent: Record<string, { title: string; icon: any; sections: Array<{ title: string; icon: any; content: string }> }> = {
+  const helpContent: Record<string, { title: string; icon: string; sections: Array<{ title: string; icon: LucideIcon; content: string }> }> = {
     "send-money": {
       title: "Envoyer de l'argent",
       icon: "💸",
