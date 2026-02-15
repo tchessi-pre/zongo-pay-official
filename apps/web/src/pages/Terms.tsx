@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, FileText, Shield, Scale } from "lucide-react";
+import { FileText, Shield, Scale } from "lucide-react";
+import Header from "@/components/Header";
 
 const Terms = () => {
   const navigate = useNavigate();
@@ -26,19 +26,11 @@ const Terms = () => {
 
   return (
     <div className="min-h-screen bg-background pb-8">
-      <div className="gradient-card text-white p-6 rounded-b-[2rem]">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/profile")}
-            className="text-white hover:bg-white/10 -ml-2"
-          >
-            <ArrowLeft className="w-6 h-6" />
-          </Button>
-          <h1 className="text-xl font-bold">Conditions d'utilisation</h1>
-        </div>
-      </div>
+      <Header
+        title="Conditions d'utilisation"
+        variant="gradient"
+        onBack={() => navigate("/profile")}
+      />
 
       <div className="px-6 py-6 space-y-3">
         {documents.map((doc) => {

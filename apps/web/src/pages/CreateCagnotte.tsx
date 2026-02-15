@@ -6,8 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Wallet, Calendar, Target, Users, User } from "lucide-react";
+import { ArrowLeft, Wallet, Calendar, Target, Users } from "lucide-react";
 import { toast } from "sonner";
+import Header from "@/components/Header";
 
 const CreateCagnotte = () => {
   const navigate = useNavigate();
@@ -35,35 +36,28 @@ const CreateCagnotte = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
-        <div className="container max-w-2xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => navigate("/cagnottes")}
-                className="rounded-full"
-              >
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
-              <div>
-                <h1 className="text-xl font-bold text-foreground">Nouvelle Cagnotte</h1>
-                <p className="text-sm text-muted-foreground">Créez votre projet d'épargne</p>
-              </div>
-            </div>
+      <Header
+        variant="plain"
+        containerClassName="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b"
+        left={
+          <div className="flex items-center gap-3">
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => navigate("/profile")}
+              onClick={() => navigate('/cagnottes')}
               className="rounded-full"
             >
-              <User className="h-5 w-5" />
+              <ArrowLeft className="h-5 w-5" />
             </Button>
+            <div>
+              <h1 className="text-xl font-bold text-foreground">Nouvelle Cagnotte</h1>
+              <p className="text-sm text-muted-foreground">Créez votre projet d'épargne</p>
+            </div>
           </div>
-        </div>
-      </div>
+        }
+        profileInitials={(JSON.parse(localStorage.getItem("user") || "{}")?.firstName?.[0] || "U").toUpperCase()}
+        onProfileClick={() => navigate('/profile')}
+      />
 
       {/* Main content */}
       <div className="container max-w-2xl mx-auto px-4 py-6">

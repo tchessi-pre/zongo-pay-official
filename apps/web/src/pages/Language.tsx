@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Check } from "lucide-react";
 import { useState } from "react";
+import Header from "@/components/Header";
 
 const Language = () => {
   const navigate = useNavigate();
@@ -16,19 +17,7 @@ const Language = () => {
 
   return (
     <div className="min-h-screen bg-background pb-8">
-      <div className="gradient-card text-white p-6 rounded-b-[2rem]">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/profile")}
-            className="text-white hover:bg-white/10 -ml-2"
-          >
-            <ArrowLeft className="w-6 h-6" />
-          </Button>
-          <h1 className="text-xl font-bold">Langue</h1>
-        </div>
-      </div>
+      <Header title="Langue" variant="gradient" onBack={() => navigate("/profile")} />
 
       <div className="px-6 py-6 space-y-3">
         {languages.map((lang) => (

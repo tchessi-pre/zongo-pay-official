@@ -1,14 +1,24 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, Share2, Copy, User } from "lucide-react";
+import { Share2, Copy } from "lucide-react";
 import { toast } from "sonner";
 import { QRCodeSVG } from "qrcode.react";
+import Header from "@/components/Header";
 
 const Receive = () => {
   const navigate = useNavigate();
   const userPhone = "+225 07 12 34 56 78"; // Mock data
   const qrData = `zongo://pay/${userPhone}`;
+  const userRaw = localStorage.getItem("user");
+  let profileInitials = "U";
+  try {
+    if (userRaw) {
+      const u = JSON.parse(userRaw);
+      const parts = [u.firstName, u.lastName].filter(Boolean);
+      if (parts.length) profileInitials = parts.map((s: string) => s[0]).join("").toUpperCase().slice(0, 2);
+    }
+  } catch { void 0 }
 
   const handleCopy = () => {
     navigator.clipboard.writeText(userPhone);
@@ -32,30 +42,14 @@ const Receive = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="sticky top-0 z-50 gradient-card text-white p-6 rounded-b-[2rem]">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate("/dashboard")}
-              className="text-white hover:bg-white/10"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </Button>
-            <h1 className="text-2xl font-bold">Recevoir de l'argent</h1>
-          </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/profile")}
-            className="text-white hover:bg-white/10"
-          >
-            <User className="w-6 h-6" />
-          </Button>
-        </div>
-      </div>
+      <Header
+        title="Recevoir de l'argent"
+        variant="gradient"
+        className="sticky top-0 z-50 rounded-b-[2rem]"
+        onBack={() => navigate("/dashboard")}
+        profileInitials={profileInitials}
+        onProfileClick={() => navigate("/profile")}
+      />
 
       {/* QR Code */}
       <div className="p-6 space-y-6 animate-fade-in">

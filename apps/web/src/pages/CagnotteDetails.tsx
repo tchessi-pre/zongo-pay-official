@@ -1,9 +1,10 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Users, Target, TrendingUp, Calendar, User } from "lucide-react";
+import { Users, Target, TrendingUp, Calendar } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import Header from "@/components/Header";
 
 const CagnotteDetails = () => {
   const navigate = useNavigate();
@@ -33,32 +34,17 @@ const CagnotteDetails = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      {/* Header */}
-      <div className={`sticky top-0 z-50 bg-gradient-to-br ${cagnotte.color} p-6 text-white`}>
-        <div className="flex items-center justify-between mb-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/cagnottes")}
-            className="text-white hover:bg-white/20"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/profile")}
-            className="text-white hover:bg-white/20"
-          >
-            <User className="h-5 w-5" />
-          </Button>
-        </div>
-
-        <div className="space-y-2">
+      <Header
+        containerClassName={`sticky top-0 z-50 bg-gradient-to-br ${cagnotte.color} rounded-b-[2rem] p-6 text-white`}
+        onBack={() => navigate("/cagnottes")}
+        profileInitials={(JSON.parse(localStorage.getItem("user") || "{}")?.firstName?.[0] || "U").toUpperCase()}
+        onProfileClick={() => navigate("/profile")}
+      >
+        <div className="space-y-2 mt-4">
           <h1 className="text-2xl font-bold">{cagnotte.name}</h1>
           <p className="text-white/90 text-sm">{cagnotte.description}</p>
         </div>
-      </div>
+      </Header>
 
       {/* Montants */}
       <div className="p-6 space-y-4">
