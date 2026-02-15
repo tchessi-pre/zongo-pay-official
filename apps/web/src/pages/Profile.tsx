@@ -5,7 +5,6 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
 import {
-  ArrowLeft,
   Phone,
   Mail,
   Shield,
@@ -22,6 +21,7 @@ import {
 } from "lucide-react";
 import zongoLogo from "@/assets/zongo-logo.png";
 import { useState } from "react";
+import Header from "@/components/Header";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -53,22 +53,13 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      {/* Header */}
-      <div className="relative gradient-card text-white p-6 pb-12 rounded-b-[3rem]">
-        <div className="flex items-center gap-4 mb-8">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/dashboard")}
-            className="text-white hover:bg-white/10 -ml-2"
-          >
-            <ArrowLeft className="w-6 h-6" />
-          </Button>
-          <h1 className="text-2xl font-bold">Mon Profil</h1>
-        </div>
-
-        {/* Profile info */}
-        <div className="text-center space-y-3">
+      <Header
+        title="Mon Profil"
+        variant="gradient"
+        className="relative pb-12 rounded-b-[3rem]"
+        onBack={() => navigate("/dashboard")}
+      >
+        <div className="text-center space-y-3 mt-8">
           <div className="relative inline-block">
             <Avatar className="w-28 h-28 border-4 border-white/30 shadow-lg">
               <AvatarImage src="" alt={profileInfo.name} />
@@ -91,7 +82,7 @@ const Profile = () => {
             <p className="text-white/70 text-sm mt-2">Membre depuis {profileInfo.joinDate}</p>
           </div>
         </div>
-      </div>
+      </Header>
 
       {/* Profile details */}
       <div className="relative z-10 px-6 -mt-6 space-y-6 animate-fade-in">

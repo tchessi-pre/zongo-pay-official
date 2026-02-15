@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, Shield, Lock, Fingerprint, Smartphone, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import Header from "@/components/Header";
 
 const Security = () => {
   const navigate = useNavigate();
@@ -17,19 +18,11 @@ const Security = () => {
 
   return (
     <div className="min-h-screen bg-background pb-8">
-      <div className="gradient-card text-white p-6 rounded-b-[2rem]">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/profile")}
-            className="text-white hover:bg-white/10 -ml-2"
-          >
-            <ArrowLeft className="w-6 h-6" />
-          </Button>
-          <h1 className="text-xl font-bold">Sécurité et confidentialité</h1>
-        </div>
-      </div>
+      <Header
+        title="Sécurité et confidentialité"
+        variant="gradient"
+        onBack={() => navigate("/profile")}
+      />
 
       <div className="px-6 py-6 space-y-4">
         <Card className="p-4 border-0 shadow-card">

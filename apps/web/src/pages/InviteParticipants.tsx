@@ -1,10 +1,11 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Share2, Copy, QrCode, User } from "lucide-react";
+import { ArrowLeft, Share2, Copy, QrCode } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { QRCodeSVG } from "qrcode.react";
+import Header from "@/components/Header";
 
 const InviteParticipants = () => {
   const navigate = useNavigate();
@@ -45,32 +46,16 @@ const InviteParticipants = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      {/* Header */}
-      <div className="sticky top-0 z-50 bg-gradient-to-br from-orange-500 to-amber-500 p-6 text-white">
-        <div className="flex items-center justify-between mb-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate(`/cagnottes/${id}`)}
-            className="text-white hover:bg-white/20"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/profile")}
-            className="text-white hover:bg-white/20"
-          >
-            <User className="h-5 w-5" />
-          </Button>
-        </div>
-
-        <div className="space-y-2">
-          <h1 className="text-2xl font-bold">Inviter des participants</h1>
-          <p className="text-white/90 text-sm">{cagnotte.name}</p>
-        </div>
-      </div>
+      <Header
+        title="Inviter des participants"
+        variant="gradient"
+        className="sticky top-0 z-50 rounded-b-[2rem]"
+        onBack={() => navigate(`/cagnottes/${id}`)}
+        profileInitials={(JSON.parse(localStorage.getItem("user") || "{}")?.firstName?.[0] || "U").toUpperCase()}
+        onProfileClick={() => navigate("/profile")}
+      >
+        <p className="text-white/90 text-sm mt-2">{cagnotte.name}</p>
+      </Header>
 
       {/* Content */}
       <div className="p-6 space-y-4">

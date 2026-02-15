@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, QrCode, Camera, User } from "lucide-react";
+import { QrCode, Camera } from "lucide-react";
 import { toast } from "sonner";
+import Header from "@/components/Header";
 
 const Scan = () => {
   const navigate = useNavigate();
@@ -21,30 +22,14 @@ const Scan = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="sticky top-0 z-50 gradient-card text-white p-6 rounded-b-[2rem]">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate("/dashboard")}
-              className="text-white hover:bg-white/10"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </Button>
-            <h1 className="text-2xl font-bold">Scanner un QR code</h1>
-          </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/profile")}
-            className="text-white hover:bg-white/10"
-          >
-            <User className="w-6 h-6" />
-          </Button>
-        </div>
-      </div>
+      <Header
+        title="Scanner un QR code"
+        variant="gradient"
+        className="sticky top-0 z-50 rounded-b-[2rem]"
+        onBack={() => navigate("/dashboard")}
+        profileInitials={(JSON.parse(localStorage.getItem("user") || "{}")?.firstName?.[0] || "U").toUpperCase()}
+        onProfileClick={() => navigate("/profile")}
+      />
 
       {/* Scanner area */}
       <div className="p-6 space-y-6 animate-fade-in">

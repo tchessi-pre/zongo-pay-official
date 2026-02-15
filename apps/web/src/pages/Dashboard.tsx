@@ -10,20 +10,27 @@ import { Card } from "@/components/ui/card";
 import {
   Send,
   QrCode,
-  Wallet,
   Users,
   ArrowUpRight,
   ArrowDownLeft,
-  User,
-  Menu,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import zongoLogo from "@/assets/zongo-logo.png";
+import Header from "@/components/Header";
 
 const Dashboard = () => {
   const [balance] = useState(125000);
   const navigate = useNavigate();
   const [selectedTransaction, setSelectedTransaction] = useState<typeof recentTransactions[0] | null>(null);
+  const userRaw = localStorage.getItem("user");
+  let profileInitials = "U";
+  try {
+    if (userRaw) {
+      const u = JSON.parse(userRaw);
+      const parts = [u.firstName, u.lastName].filter(Boolean);
+      if (parts.length) profileInitials = parts.map((s: string) => s[0]).join("").toUpperCase().slice(0, 2);
+    }
+  } catch { void 0 }
 
   const recentTransactions = [
     { id: 1, name: "Kofi Mensah", amount: 15000, type: "received", date: "Aujourd'hui, 14:30", reference: "TXN-2024-001", status: "Complété" },
@@ -40,20 +47,18 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      {/* Header */}
-      <div className="sticky top-0 z-40 gradient-card text-white p-6 pb-16 rounded-b-[3rem]">
-        <div className="flex items-center justify-between mb-8">
-          <img src={zongoLogo} alt="Zongo Pay" className="h-10 brightness-0 invert" />
-          <Button variant="ghost" size="icon" onClick={() => navigate("/profile")}>
-            <User className="w-6 h-6" />
-          </Button>
-        </div>
-
-        <div className="space-y-2">
+      <Header
+        variant="gradient"
+        className="sticky top-0 z-40 pb-16 rounded-b-[3rem]"
+        left={<img src={zongoLogo} alt="Zongo Pay" className="h-10 brightness-0 invert" />}
+        profileInitials={profileInitials}
+        onProfileClick={() => navigate("/profile")}
+      >
+        <div className="space-y-2 mt-8">
           <p className="text-white/80 text-sm font-medium">Solde disponible</p>
           <h1 className="text-5xl font-bold">{balance.toLocaleString("fr-FR")} F CFA</h1>
         </div>
-      </div>
+      </Header>
 
       {/* Quick Actions */}
       <div className="sticky top-24 z-50 px-6 -mt-12 bg-background pt-2">

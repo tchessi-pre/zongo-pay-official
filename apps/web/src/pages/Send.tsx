@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Send, User, Wallet } from "lucide-react";
+import { Send, Wallet } from "lucide-react";
 import { toast } from "sonner";
+import Header from "@/components/Header";
 
 const SendMoney = () => {
   const navigate = useNavigate();
@@ -15,6 +16,15 @@ const SendMoney = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [provider, setProvider] = useState<"tmoney" | "moov">("tmoney");
+  const userRaw = localStorage.getItem("user");
+  let profileInitials = "U";
+  try {
+    if (userRaw) {
+      const u = JSON.parse(userRaw);
+      const parts = [u.firstName, u.lastName].filter(Boolean);
+      if (parts.length) profileInitials = parts.map((s: string) => s[0]).join("").toUpperCase().slice(0, 2);
+    }
+  } catch { void 0 }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,30 +39,14 @@ const SendMoney = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="sticky top-0 z-50 gradient-card text-white p-6 rounded-b-[2rem]">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate("/dashboard")}
-              className="text-white hover:bg-white/10"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </Button>
-            <h1 className="text-2xl font-bold">Envoyer de l'argent</h1>
-          </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/profile")}
-            className="text-white hover:bg-white/10"
-          >
-            <User className="w-6 h-6" />
-          </Button>
-        </div>
-      </div>
+      <Header
+        title="Envoyer de l'argent"
+        variant="gradient"
+        className="sticky top-0 z-50 rounded-b-[2rem]"
+        onBack={() => navigate("/dashboard")}
+        profileInitials={profileInitials}
+        onProfileClick={() => navigate("/profile")}
+      />
 
       {/* Form */}
       <div className="p-6 space-y-6 animate-fade-in">
@@ -66,8 +60,8 @@ const SendMoney = () => {
                   type="button"
                   onClick={() => setProvider("tmoney")}
                   className={`flex items-center justify-center gap-2 h-14 rounded-xl border-2 transition-all font-semibold ${provider === "tmoney"
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-muted bg-muted/30 text-muted-foreground"
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-muted bg-muted/30 text-muted-foreground"
                     }`}
                 >
                   <Wallet className="w-5 h-5" />
@@ -77,8 +71,8 @@ const SendMoney = () => {
                   type="button"
                   onClick={() => setProvider("moov")}
                   className={`flex items-center justify-center gap-2 h-14 rounded-xl border-2 transition-all font-semibold ${provider === "moov"
-                      ? "border-[hsl(var(--success))] bg-success/10 text-success"
-                      : "border-muted bg-muted/30 text-muted-foreground"
+                    ? "border-[hsl(var(--success))] bg-success/10 text-success"
+                    : "border-muted bg-muted/30 text-muted-foreground"
                     }`}
                 >
                   <Wallet className="w-5 h-5" />
