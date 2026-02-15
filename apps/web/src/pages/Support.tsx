@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, Phone, Mail, MessageCircle, Clock } from "lucide-react";
+import { Phone, Mail, MessageCircle, Clock } from "lucide-react";
+import Header from "@/components/Header";
 
 const Support = () => {
   const navigate = useNavigate();
@@ -29,19 +29,11 @@ const Support = () => {
 
   return (
     <div className="min-h-screen bg-background pb-8">
-      <div className="gradient-card text-white p-6 rounded-b-[2rem]">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/profile")}
-            className="text-white hover:bg-white/10 -ml-2"
-          >
-            <ArrowLeft className="w-6 h-6" />
-          </Button>
-          <h1 className="text-xl font-bold">Contacter le support</h1>
-        </div>
-      </div>
+      <Header
+        title="Contacter le support"
+        variant="gradient"
+        onBack={() => navigate("/profile")}
+      />
 
       <div className="px-6 py-6 space-y-4">
         <Card className="p-4 border-0 shadow-card bg-primary/5">

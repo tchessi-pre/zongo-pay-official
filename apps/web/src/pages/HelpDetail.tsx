@@ -1,7 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, CheckCircle2, AlertCircle, Info, type LucideIcon } from "lucide-react";
+import { CheckCircle2, AlertCircle, Info, type LucideIcon } from "lucide-react";
+import Header from "@/components/Header";
 
 const HelpDetail = () => {
   const navigate = useNavigate();
@@ -121,38 +122,14 @@ const HelpDetail = () => {
   if (!content) {
     return (
       <div className="min-h-screen bg-background pb-8">
-        <div className="gradient-card text-white p-6 rounded-b-[2rem]">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate("/help")}
-              className="text-white hover:bg-white/10 -ml-2"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </Button>
-            <h1 className="text-xl font-bold">Aide non trouvée</h1>
-          </div>
-        </div>
+        <Header title="Aide non trouvée" variant="gradient" onBack={() => navigate("/help")} />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-background pb-8">
-      <div className="gradient-card text-white p-6 rounded-b-[2rem]">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/help")}
-            className="text-white hover:bg-white/10 -ml-2"
-          >
-            <ArrowLeft className="w-6 h-6" />
-          </Button>
-          <h1 className="text-xl font-bold">{content.title}</h1>
-        </div>
-      </div>
+      <Header title={content.title} variant="gradient" onBack={() => navigate("/help")} />
 
       <div className="px-6 py-6 space-y-4">
         {content.sections.map((section) => {
