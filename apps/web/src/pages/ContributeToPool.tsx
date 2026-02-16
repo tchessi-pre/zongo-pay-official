@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
 import Header from "@/components/Header";
+import { getProfileInitials } from "@/lib/utils";
 
 const ContributeToPool = () => {
   const navigate = useNavigate();
@@ -56,7 +57,7 @@ const ContributeToPool = () => {
         variant="gradient"
         className="sticky top-0 z-50 rounded-b-[2rem]"
         onBack={() => navigate(`/cagnottes/${id}`)}
-        profileInitials={(JSON.parse(localStorage.getItem("user") || "{}")?.firstName?.[0] || "U").toUpperCase()}
+        profileInitials={getProfileInitials()}
         onProfileClick={() => navigate("/profile")}
       >
         <p className="text-white/90 text-sm mt-2">{cagnotte.name}</p>
