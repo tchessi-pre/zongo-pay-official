@@ -18,25 +18,76 @@ import { useNavigate } from "react-router-dom";
 import zongoLogo from "@/assets/zongo-logo.png";
 import Header from "@/components/Header";
 
+type TransactionType = "received" | "sent";
+
+type Transaction = {
+  id: number;
+  name: string;
+  amount: number;
+  type: TransactionType;
+  date: string;
+  reference: string;
+  status: string;
+};
+
+const RECENT_TRANSACTIONS: Transaction[] = [
+  {
+    id: 1,
+    name: "Kofi Mensah",
+    amount: 15000,
+    type: "received",
+    date: "Aujourd'hui, 14:30",
+    reference: "TXN-2024-001",
+    status: "Complété",
+  },
+  {
+    id: 2,
+    name: "Aïcha Diallo",
+    amount: -8500,
+    type: "sent",
+    date: "Hier, 09:15",
+    reference: "TXN-2024-002",
+    status: "Complété",
+  },
+  {
+    id: 3,
+    name: "Cagnotte Vacances",
+    amount: 20000,
+    type: "received",
+    date: "Hier, 16:45",
+    reference: "TXN-2024-003",
+    status: "Complété",
+  },
+];
+
+type LocalUser = {
+  firstName?: string;
+  lastName?: string;
+};
+
+const getProfileInitials = (): string => {
+  if (typeof window === "undefined") return "U";
+  try {
+    const raw = window.localStorage.getItem("user");
+    if (!raw) return "U";
+    const parsed = JSON.parse(raw) as LocalUser;
+    const parts = [parsed.firstName, parsed.lastName].filter(Boolean) as string[];
+    if (!parts.length) return "U";
+    return parts
+      .map((part) => part.trim()[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  } catch {
+    return "U";
+  }
+};
+
 const Dashboard = () => {
   const [balance] = useState(125000);
   const navigate = useNavigate();
-  const [selectedTransaction, setSelectedTransaction] = useState<typeof recentTransactions[0] | null>(null);
-  const userRaw = localStorage.getItem("user");
-  let profileInitials = "U";
-  try {
-    if (userRaw) {
-      const u = JSON.parse(userRaw);
-      const parts = [u.firstName, u.lastName].filter(Boolean);
-      if (parts.length) profileInitials = parts.map((s: string) => s[0]).join("").toUpperCase().slice(0, 2);
-    }
-  } catch { void 0 }
-
-  const recentTransactions = [
-    { id: 1, name: "Kofi Mensah", amount: 15000, type: "received", date: "Aujourd'hui, 14:30", reference: "TXN-2024-001", status: "Complété" },
-    { id: 2, name: "Aïcha Diallo", amount: -8500, type: "sent", date: "Hier, 09:15", reference: "TXN-2024-002", status: "Complété" },
-    { id: 3, name: "Cagnotte Vacances", amount: 20000, type: "received", date: "Hier, 16:45", reference: "TXN-2024-003", status: "Complété" },
-  ];
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [profileInitials] = useState(getProfileInitials);
 
   const quickActions = [
     { icon: Send, label: "Envoyer", path: "/send", color: "gradient-card" },
@@ -94,7 +145,7 @@ const Dashboard = () => {
           </div>
 
           <div className="space-y-3">
-            {recentTransactions.map((transaction) => (
+            {RECENT_TRANSACTIONS.map((transaction) => (
               <Card
                 key={transaction.id}
                 className="p-4 flex items-center justify-between border-0 shadow-soft hover:shadow-card transition-shadow cursor-pointer"
