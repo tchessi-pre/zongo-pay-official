@@ -5,20 +5,13 @@ import { Share2, Copy } from "lucide-react";
 import { toast } from "sonner";
 import { QRCodeSVG } from "qrcode.react";
 import Header from "@/components/Header";
+import { getProfileInitials } from "@/lib/utils";
 
 const Receive = () => {
   const navigate = useNavigate();
   const userPhone = "+225 07 12 34 56 78"; // Mock data
   const qrData = `zongo://pay/${userPhone}`;
-  const userRaw = localStorage.getItem("user");
-  let profileInitials = "U";
-  try {
-    if (userRaw) {
-      const u = JSON.parse(userRaw);
-      const parts = [u.firstName, u.lastName].filter(Boolean);
-      if (parts.length) profileInitials = parts.map((s: string) => s[0]).join("").toUpperCase().slice(0, 2);
-    }
-  } catch { void 0 }
+  const profileInitials = getProfileInitials();
 
   const handleCopy = () => {
     navigator.clipboard.writeText(userPhone);

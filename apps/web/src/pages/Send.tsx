@@ -1,33 +1,89 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
-import { Send, Wallet } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import Header from "@/components/Header";
+import SendHeader from "@/components/send/SendHeader";
+import SendForm from "@/components/send/SendForm";
+import PendingScanBanner, {
+  type PendingScanData,
+} from "@/components/send/PendingScanBanner";
+import { getProfileInitials } from "@/lib/utils";
 
 const SendMoney = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const scanState = location.state as { fromScan?: boolean; qrData?: string } | null;
   const [amount, setAmount] = useState("");
   const [recipient, setRecipient] = useState("");
-  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [provider, setProvider] = useState<"tmoney" | "moov">("tmoney");
-  const userRaw = localStorage.getItem("user");
-  let profileInitials = "U";
-  try {
-    if (userRaw) {
-      const u = JSON.parse(userRaw);
-      const parts = [u.firstName, u.lastName].filter(Boolean);
-      if (parts.length) profileInitials = parts.map((s: string) => s[0]).join("").toUpperCase().slice(0, 2);
+  const [profileInitials] = useState(getProfileInitials);
+  const [pendingScan, setPendingScan] = useState<PendingScanData | null>(null);
+
+  useEffect(() => {
+    if (!scanState?.fromScan || !scanState.qrData) return;
+    try {
+      const parsed = JSON.parse(scanState.qrData) as {
+        recipient?: string;
+        amount?: number | string;
+        provider?: string;
+      };
+      const rawRecipient = typeof parsed.recipient === "string" ? parsed.recipient.trim() : "";
+      const rawAmount =
+        typeof parsed.amount === "number" || typeof parsed.amount === "string" ? parsed.amount : "";
+      const amountStr = String(rawAmount).trim();
+      const numericAmount = Number(amountStr);
+      const providerCandidate =
+        typeof parsed.provider === "string" ? parsed.provider.toLowerCase().trim() : "";
+      const providerValue =
+        providerCandidate === "tmoney" || providerCandidate === "moov"
+          ? (providerCandidate as "tmoney" | "moov")
+          : undefined;
+
+      if (!rawRecipient || !Number.isFinite(numericAmount) || numericAmount <= 0) {
+        throw new Error();
+      }
+      setPendingScan({
+        recipient: rawRecipient,
+        amount: amountStr,
+        provider: providerValue,
+      });
+    } catch {
+      try {
+        const [rawRecipient, rawAmount, rawProvider] = scanState.qrData.split("|");
+        const recipientPart = rawRecipient?.trim() ?? "";
+        const amountStr = rawAmount?.trim() ?? "";
+        const numericAmount = Number(amountStr);
+        const providerCandidate = rawProvider?.toLowerCase().trim() ?? "";
+        const providerValue =
+          providerCandidate === "tmoney" || providerCandidate === "moov"
+            ? (providerCandidate as "tmoney" | "moov")
+            : undefined;
+
+        if (!recipientPart || !Number.isFinite(numericAmount) || numericAmount <= 0) {
+          throw new Error();
+        }
+        setPendingScan({
+          recipient: recipientPart,
+          amount: amountStr,
+          provider: providerValue,
+        });
+      } catch {
+        toast.error("QR code non reconnu");
+      }
     }
-  } catch { void 0 }
+  }, [scanState]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!recipient.trim()) {
+      toast.error("Veuillez saisir un destinataire");
+      return;
+    }
+    const numericAmount = Number(amount);
+    if (!Number.isFinite(numericAmount) || numericAmount <= 0) {
+      toast.error("Le montant doit être supérieur à 0");
+      return;
+    }
     setLoading(true);
 
     setTimeout(() => {
@@ -39,113 +95,37 @@ const SendMoney = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header
-        title="Envoyer de l'argent"
-        variant="gradient"
-        className="sticky top-0 z-50 rounded-b-[2rem]"
-        onBack={() => navigate("/dashboard")}
+      <SendHeader
         profileInitials={profileInitials}
+        onBack={() => navigate("/dashboard")}
         onProfileClick={() => navigate("/profile")}
       />
 
-      {/* Form */}
-      <div className="p-6 space-y-6 animate-fade-in">
-        <Card className="p-6 shadow-card border-0">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Provider Selection */}
-            <div className="space-y-2">
-              <Label>Opérateur</Label>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setProvider("tmoney")}
-                  className={`flex items-center justify-center gap-2 h-14 rounded-xl border-2 transition-all font-semibold ${provider === "tmoney"
-                    ? "border-primary bg-primary/10 text-primary"
-                    : "border-muted bg-muted/30 text-muted-foreground"
-                    }`}
-                >
-                  <Wallet className="w-5 h-5" />
-                  T-Money
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setProvider("moov")}
-                  className={`flex items-center justify-center gap-2 h-14 rounded-xl border-2 transition-all font-semibold ${provider === "moov"
-                    ? "border-[hsl(var(--success))] bg-success/10 text-success"
-                    : "border-muted bg-muted/30 text-muted-foreground"
-                    }`}
-                >
-                  <Wallet className="w-5 h-5" />
-                  Moov Money
-                </button>
-              </div>
-            </div>
+      <PendingScanBanner
+        pendingScan={pendingScan}
+        onUse={() => {
+          if (!pendingScan) return;
+          setRecipient(pendingScan.recipient);
+          setAmount(pendingScan.amount);
+          if (pendingScan.provider) {
+            setProvider(pendingScan.provider);
+          }
+          setPendingScan(null);
+        }}
+        onIgnore={() => setPendingScan(null)}
+      />
 
-            <div className="space-y-2">
-              <Label htmlFor="recipient">Destinataire</Label>
-              <Input
-                id="recipient"
-                type="tel"
-                placeholder="Numéro de téléphone ou nom"
-                value={recipient}
-                onChange={(e) => setRecipient(e.target.value)}
-                required
-                className="rounded-xl h-12"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="amount">Montant (F CFA)</Label>
-              <div className="relative">
-                <Input
-                  id="amount"
-                  type="number"
-                  placeholder="0"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  required
-                  className="rounded-xl h-16 text-3xl font-bold text-center"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="message">Message (optionnel)</Label>
-              <Textarea
-                id="message"
-                placeholder="Ajouter un message..."
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                className="rounded-xl resize-none"
-                rows={3}
-              />
-            </div>
-
-            {/* Quick amounts */}
-            <div className="space-y-2">
-              <Label>Montants rapides</Label>
-              <div className="grid grid-cols-3 gap-3">
-                {[5000, 10000, 25000].map((quickAmount) => (
-                  <Button
-                    key={quickAmount}
-                    type="button"
-                    variant="outline"
-                    onClick={() => setAmount(quickAmount.toString())}
-                    className="h-12"
-                  >
-                    {quickAmount.toLocaleString()} F
-                  </Button>
-                ))}
-              </div>
-            </div>
-
-            <Button type="submit" className="w-full" size="lg" disabled={loading}>
-              {loading ? "Envoi en cours..." : "Envoyer"}
-              <Send className="ml-2 w-5 h-5" />
-            </Button>
-          </form>
-        </Card>
-      </div>
+      <SendForm
+        provider={provider}
+        recipient={recipient}
+        amount={amount}
+        loading={loading}
+        onProviderChange={setProvider}
+        onRecipientChange={setRecipient}
+        onAmountChange={setAmount}
+        onQuickAmountSelect={(value) => setAmount(value.toString())}
+        onSubmit={handleSubmit}
+      />
     </div>
   );
 };
