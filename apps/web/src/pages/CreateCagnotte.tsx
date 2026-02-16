@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Wallet, Calendar, Target, Users } from "lucide-react";
 import { toast } from "sonner";
 import Header from "@/components/Header";
+import { getProfileInitials } from "@/lib/utils";
 
 const CreateCagnotte = () => {
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ const CreateCagnotte = () => {
             </div>
           </div>
         }
-        profileInitials={(JSON.parse(localStorage.getItem("user") || "{}")?.firstName?.[0] || "U").toUpperCase()}
+        profileInitials={getProfileInitials()}
         onProfileClick={() => navigate('/profile')}
       />
 

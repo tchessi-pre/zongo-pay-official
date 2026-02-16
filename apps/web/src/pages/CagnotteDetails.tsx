@@ -5,6 +5,7 @@ import { Users, Target, TrendingUp, Calendar } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Header from "@/components/Header";
+import { getProfileInitials } from "@/lib/utils";
 
 const CagnotteDetails = () => {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ const CagnotteDetails = () => {
       <Header
         containerClassName={`sticky top-0 z-50 bg-gradient-to-br ${cagnotte.color} rounded-b-[2rem] p-6 text-white`}
         onBack={() => navigate("/cagnottes")}
-        profileInitials={(JSON.parse(localStorage.getItem("user") || "{}")?.firstName?.[0] || "U").toUpperCase()}
+        profileInitials={getProfileInitials()}
         onProfileClick={() => navigate("/profile")}
       >
         <div className="space-y-2 mt-4">
