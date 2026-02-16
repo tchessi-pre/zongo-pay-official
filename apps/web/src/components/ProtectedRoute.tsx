@@ -4,7 +4,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const user = localStorage.getItem("user");
 
   if (!user) {
-    return <Navigate to="/auth" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return <>{children}</>;
