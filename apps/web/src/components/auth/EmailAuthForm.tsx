@@ -21,9 +21,10 @@ type EmailAuthFormProps = {
   loading: boolean;
   onSubmit: (values: EmailAuthFormValues) => void;
   onGoogleAuth: () => void;
+  onForgotPassword?: () => void;
 };
 
-const EmailAuthForm = ({ isLogin, loading, onSubmit, onGoogleAuth }: EmailAuthFormProps) => {
+const EmailAuthForm = ({ isLogin, loading, onSubmit, onGoogleAuth, onForgotPassword }: EmailAuthFormProps) => {
   const form = useForm<EmailAuthFormValues>({
     defaultValues: {
       firstName: "",
@@ -96,7 +97,11 @@ const EmailAuthForm = ({ isLogin, loading, onSubmit, onGoogleAuth }: EmailAuthFo
       )}
       {isLogin && (
         <div className="text-right">
-          <button type="button" className="text-sm text-primary hover:underline font-medium">
+          <button
+            type="button"
+            onClick={onForgotPassword}
+            className="text-sm text-primary hover:underline font-medium"
+          >
             Mot de passe oublié ?
           </button>
         </div>
@@ -104,8 +109,8 @@ const EmailAuthForm = ({ isLogin, loading, onSubmit, onGoogleAuth }: EmailAuthFo
       <Button type="submit" className="w-full" size="lg" disabled={loading}>
         {loading ? (isLogin ? "Connexion..." : "Création...") : (isLogin ? "Se connecter" : "Créer mon compte")}
       </Button>
-      <Divider />
-      <GoogleButton loading={loading} onClick={onGoogleAuth} />
+      {/* <Divider /> */}
+      {/* <GoogleButton loading={loading} onClick={onGoogleAuth} />  */}
     </form>
   );
 };

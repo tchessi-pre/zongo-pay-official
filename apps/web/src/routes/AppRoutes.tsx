@@ -23,7 +23,7 @@ import HelpDetail from '@/pages/HelpDetail';
 import Support from '@/pages/Support';
 import Terms from '@/pages/Terms';
 import NotFound from '@/pages/NotFound';
-import ProtectedRoute from '@/components/ProtectedRoute';
+import ProtectedRoute from '@/routes/ProtectedRoute';
 
 type AppRouteConfig = {
 	path: string;

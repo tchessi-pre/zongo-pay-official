@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Phone, Mail, MessageCircle, Clock } from "lucide-react";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 
 const Support = () => {
   const navigate = useNavigate();

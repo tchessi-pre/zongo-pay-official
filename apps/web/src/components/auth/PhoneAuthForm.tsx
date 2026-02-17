@@ -30,10 +30,20 @@ const PhoneAuthForm = ({ isLogin, loading, onSubmit, onGoogleAuth }: PhoneAuthFo
     },
   });
 
-  const handleSubmit = form.handleSubmit(onSubmit);
+  const handleSubmit = form.handleSubmit((values) => {
+    const onlyDigits = (values.phone || "").replace(/\D/g, "");
+    const tgDigits = onlyDigits.slice(-8);
+    const e164 = tgDigits ? `+228${tgDigits}` : "";
+    onSubmit({ ...values, phone: e164 });
+  });
 
   const firstName = form.watch("firstName") || "";
   const lastName = form.watch("lastName") || "";
+  const rawPhone = form.watch("phone") || "";
+  const formatTg = (v: string) => {
+    const d = v.replace(/\D/g, "").slice(0, 8);
+    return d.replace(/(\d{2})(?=\d)/g, "$1 ").trim();
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -65,8 +75,13 @@ const PhoneAuthForm = ({ isLogin, loading, onSubmit, onGoogleAuth }: PhoneAuthFo
             id="phone"
             type="tel"
             placeholder="XX XX XX XX"
-            maxLength={10}
+            inputMode="numeric"
             className="rounded-xl flex-1"
+            value={formatTg(rawPhone)}
+            onChange={(e) => {
+              const v = e.target.value.replace(/\D/g, "").slice(0, 8);
+              form.setValue("phone", v, { shouldDirty: true, shouldTouch: true });
+            }}
             {...form.register("phone", { required: true })}
           />
         </div>
@@ -75,8 +90,8 @@ const PhoneAuthForm = ({ isLogin, loading, onSubmit, onGoogleAuth }: PhoneAuthFo
       <Button type="submit" className="w-full" size="lg" disabled={loading}>
         {loading ? "Envoi..." : "Recevoir le code OTP"}
       </Button>
-      <Divider />
-      <GoogleButton loading={loading} onClick={onGoogleAuth} />
+      {/* <Divider /> */}
+      {/* <GoogleButton loading={loading} onClick={onGoogleAuth} /> */}
     </form>
   );
 };

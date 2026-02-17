@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import type { ReactNode } from "react";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import zongoLogo from "@/assets/zongo-logo.png";
 
 type BalanceHeaderProps = {
@@ -52,7 +52,7 @@ const BalanceHeader = ({
       className={`sticky top-0 z-40 pb-16 rounded-b-[3rem] ${className ?? ""}`}
       left={
         leftContent ?? (
-          <img src={zongoLogo} alt="Zongo Pay" className="h-24 brightness-0 invert" />
+          <img src={zongoLogo} alt="Zongo Pay" className="h-12 brightness-0 invert" />
         )
       }
       profileInitials={profileInitials}

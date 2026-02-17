@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CheckCircle2, AlertCircle, Info, type LucideIcon } from "lucide-react";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 
 const HelpDetail = () => {
   const navigate = useNavigate();
