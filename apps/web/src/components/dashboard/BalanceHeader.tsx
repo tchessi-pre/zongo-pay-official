@@ -52,7 +52,7 @@ const BalanceHeader = ({
       className={`sticky top-0 z-40 pb-16 rounded-b-[3rem] ${className ?? ""}`}
       left={
         leftContent ?? (
-          <img src={zongoLogo} alt="Zongo Pay" className="h-10 brightness-0 invert" />
+          <img src={zongoLogo} alt="Zongo Pay" className="h-24 brightness-0 invert" />
         )
       }
       profileInitials={profileInitials}
