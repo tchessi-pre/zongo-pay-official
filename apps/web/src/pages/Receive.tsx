@@ -1,17 +1,17 @@
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Share2, Copy } from "lucide-react";
 import { toast } from "sonner";
-import { QRCodeSVG } from "qrcode.react";
-import Header from "@/components/Header";
 import { getProfileInitials } from "@/lib/utils";
+import ReceiveHeader from "@/components/receive/ReceiveHeader";
+import ReceiveQrCard from "@/components/receive/ReceiveQrCard";
+import ReceiveShareButton from "@/components/receive/ReceiveShareButton";
 
 const Receive = () => {
   const navigate = useNavigate();
-  const userPhone = "+225 07 12 34 56 78"; // Mock data
-  const qrData = `zongo://pay/${userPhone}`;
   const profileInitials = getProfileInitials();
+
+  const userPhone = useMemo(() => "+225 07 12 34 56 78", []);
+  const qrData = useMemo(() => `zongo://pay/${userPhone}`, [userPhone]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(userPhone);
@@ -19,79 +19,47 @@ const Receive = () => {
   };
 
   const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: "Zongo Pay",
-          text: `Envoyez-moi de l'argent sur Zongo Pay : ${userPhone}`,
-        });
-      } catch (error) {
-        console.log("Partage annulé");
+    if (typeof navigator === "undefined") {
+      handleCopy();
+      return;
+    }
+
+    const shareText = `Envoyez-moi de l'argent sur Zongo Pay : ${userPhone}`;
+    const shareData: ShareData = {
+      title: "Zongo Pay",
+      text: shareText,
+    };
+
+    if (!navigator.share || (navigator.canShare && !navigator.canShare(shareData))) {
+      handleCopy();
+      return;
+    }
+
+    try {
+      await navigator.share(shareData);
+      toast.success("Lien de paiement partagé");
+    } catch (error) {
+      const isAbortError =
+        error instanceof DOMException && (error.name === "AbortError" || error.name === "NotAllowedError");
+      if (isAbortError) {
+        return;
       }
-    } else {
+
+      toast.error("Impossible de partager, numéro copié à la place");
       handleCopy();
     }
   };
 
   return (
     <div className="min-h-screen bg-background">
-      <Header
-        title="Recevoir de l'argent"
-        variant="gradient"
-        className="sticky top-0 z-50 rounded-b-[2rem]"
-        onBack={() => navigate("/dashboard")}
+      <ReceiveHeader
         profileInitials={profileInitials}
+        onBack={() => navigate("/dashboard")}
         onProfileClick={() => navigate("/profile")}
       />
-
-      {/* QR Code */}
       <div className="p-6 space-y-6 animate-fade-in">
-        <Card className="p-8 shadow-card border-0">
-          <div className="text-center space-y-6">
-            <div className="space-y-2">
-              <h2 className="text-xl font-bold text-foreground">Scannez mon QR code</h2>
-              <p className="text-muted-foreground">
-                Demandez à votre ami de scanner ce code pour vous envoyer de l'argent
-              </p>
-            </div>
-
-            {/* QR Code */}
-            <div className="flex justify-center w-full">
-              <div className="bg-white p-4 sm:p-8 rounded-3xl shadow-soft">
-                <QRCodeSVG
-                  value={qrData}
-                  size={200}
-                  level="H"
-                  includeMargin={true}
-                  fgColor="#FF8C42"
-                  className="w-full h-auto max-w-[200px] sm:max-w-[250px]"
-                />
-              </div>
-            </div>
-
-            {/* Phone number */}
-            <div className="space-y-3">
-              <p className="text-sm text-muted-foreground">Ou partagez mon numéro :</p>
-              <div className="flex items-center gap-3 bg-secondary p-4 rounded-2xl">
-                <span className="flex-1 text-lg font-semibold text-foreground">{userPhone}</span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handleCopy}
-                  className="hover:bg-primary/10"
-                >
-                  <Copy className="w-5 h-5 text-primary" />
-                </Button>
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        {/* Share button */}
-        <Button onClick={handleShare} variant="gradient" className="w-full" size="lg">
-          <Share2 className="mr-2 w-5 h-5" />
-          Partager mon QR code
-        </Button>
+        <ReceiveQrCard qrData={qrData} phone={userPhone} onCopy={handleCopy} />
+        <ReceiveShareButton onShare={handleShare} />
       </div>
     </div>
   );
