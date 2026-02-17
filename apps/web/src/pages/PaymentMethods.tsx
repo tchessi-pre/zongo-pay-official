@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Plus, Smartphone, Building2 } from "lucide-react";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 
 const PaymentMethods = () => {
   const navigate = useNavigate();

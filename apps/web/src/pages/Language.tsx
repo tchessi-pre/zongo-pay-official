@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Check } from "lucide-react";
 import { useState } from "react";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 
 const Language = () => {
   const navigate = useNavigate();

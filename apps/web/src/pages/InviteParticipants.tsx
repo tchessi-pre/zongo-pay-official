@@ -5,7 +5,7 @@ import { ArrowLeft, Share2, Copy, QrCode } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { QRCodeSVG } from "qrcode.react";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 
 const InviteParticipants = () => {
   const navigate = useNavigate();

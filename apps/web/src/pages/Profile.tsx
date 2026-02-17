@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import zongoLogo from "@/assets/zongo-logo.png";
 import { useState } from "react";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 
 const Profile = () => {
   const navigate = useNavigate();

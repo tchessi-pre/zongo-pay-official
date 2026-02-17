@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, ChevronRight, Send, QrCode, Users, CreditCard, Shield, HelpCircle } from "lucide-react";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 
 const Help = () => {
   const navigate = useNavigate();

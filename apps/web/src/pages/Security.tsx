@@ -1,10 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft, Shield, Lock, Fingerprint, Smartphone, ChevronRight } from "lucide-react";
+import { Lock, Fingerprint, Smartphone, ChevronRight } from "lucide-react";
 import { useState } from "react";
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 
 const Security = () => {
   const navigate = useNavigate();
