@@ -42,7 +42,7 @@ const OtpVerificationForm = ({
           </InputOTP>
         </div>
         <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-          <span>Code envoyé au +228 {phone}</span>
+          <span>Code envoyé au {phone.startsWith("+") ? phone : `+228 ${phone}`}</span>
           {!canResend && timer > 0 && <span className="text-primary font-medium">({timer}s)</span>}
         </div>
       </div>

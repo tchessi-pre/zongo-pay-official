@@ -19,9 +19,11 @@ import ProfileContactCard from "@/components/profile/ProfileContactCard";
 import ProfileNotificationsCard from "@/components/profile/ProfileNotificationsCard";
 import ProfileMenuSection from "@/components/profile/ProfileMenuSection";
 import ConfirmDialogButton from "@/components/common/ConfirmDialogButton";
+import { useAuth } from "@/auth/AuthContext";
 
 const Profile = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
   const profileInfo = {
@@ -45,11 +47,7 @@ const Profile = () => {
   ];
 
   const handleLogout = () => {
-    try {
-      localStorage.removeItem("user");
-    } catch {
-      return;
-    }
+    logout();
     navigate("/login");
   };
 
@@ -58,7 +56,7 @@ const Profile = () => {
       <Header
         title="Mon Profil"
         variant="gradient"
-        className="sticky top-0 z-50 rounded-b-[2rem] animate-fade-in"
+        className="sticky top-0 z-50 rounded-b-[1rem] animate-fade-in"
         onBack={() => navigate("/dashboard")}
       />
 

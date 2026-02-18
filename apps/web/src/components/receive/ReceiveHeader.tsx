@@ -17,7 +17,7 @@ const ReceiveHeader = ({
     <Header
       title={title}
       variant="gradient"
-      className="sticky top-0 z-50 rounded-b-[2rem]"
+      className="sticky top-0 z-50 rounded-b-[1rem]"
       onBack={onBack}
       profileInitials={profileInitials}
       onProfileClick={onProfileClick}
