@@ -3,8 +3,6 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Divider } from "@/components/auth/Divider";
-import { GoogleButton } from "@/components/auth/GoogleButton";
 import { NameFields } from "@/components/auth/NameFields";
 import { Eye, EyeOff } from "lucide-react";
 
@@ -109,8 +107,6 @@ const EmailAuthForm = ({ isLogin, loading, onSubmit, onGoogleAuth, onForgotPassw
       <Button type="submit" className="w-full" size="lg" disabled={loading}>
         {loading ? (isLogin ? "Connexion..." : "Création...") : (isLogin ? "Se connecter" : "Créer mon compte")}
       </Button>
-      <Divider />
-      <GoogleButton loading={loading} onClick={onGoogleAuth} /> 
     </form>
   );
 };

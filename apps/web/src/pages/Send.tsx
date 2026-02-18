@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 import SendHeader from "@/components/send/SendHeader";
 import SendForm from "@/components/send/SendForm";
 import PendingScanBanner, {
   type PendingScanData,
 } from "@/components/send/PendingScanBanner";
 import { getProfileInitials } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 const SendMoney = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { toast } = useToast();
   const scanState = location.state as { fromScan?: boolean; qrData?: string } | null;
   const [amount, setAmount] = useState("");
   const [recipient, setRecipient] = useState("");
@@ -68,27 +69,39 @@ const SendMoney = () => {
           provider: providerValue,
         });
       } catch {
-        toast.error("QR code non reconnu");
+        toast({
+          variant: "destructive",
+          description: "QR code non reconnu",
+        });
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scanState]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!recipient.trim()) {
-      toast.error("Veuillez saisir un destinataire");
+      toast({
+        variant: "destructive",
+        description: "Veuillez saisir un destinataire",
+      });
       return;
     }
     const numericAmount = Number(amount);
     if (!Number.isFinite(numericAmount) || numericAmount <= 0) {
-      toast.error("Le montant doit être supérieur à 0");
+      toast({
+        variant: "destructive",
+        description: "Le montant doit être supérieur à 0",
+      });
       return;
     }
     setLoading(true);
 
     setTimeout(() => {
       setLoading(false);
-      toast.success("Paiement envoyé avec succès !");
+      toast({
+        description: "Paiement envoyé avec succès !",
+      });
       navigate("/dashboard");
     }, 1500);
   };

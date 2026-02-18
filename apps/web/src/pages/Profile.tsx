@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import {
   Phone,
-  Mail,
   Shield,
   Globe,
   CreditCard,
@@ -10,6 +9,7 @@ import {
   FileText,
   Share2,
   ChevronRight,
+  LogOut,
 } from "lucide-react";
 import zongoLogo from "@/assets/zongo-logo.png";
 import { useState } from "react";
@@ -18,7 +18,7 @@ import ProfileHero from "@/components/profile/ProfileHero";
 import ProfileContactCard from "@/components/profile/ProfileContactCard";
 import ProfileNotificationsCard from "@/components/profile/ProfileNotificationsCard";
 import ProfileMenuSection from "@/components/profile/ProfileMenuSection";
-import ProfileLogoutSection from "@/components/profile/ProfileLogoutSection";
+import ConfirmDialogButton from "@/components/common/ConfirmDialogButton";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ const Profile = () => {
 
   const profileInfo = {
     name: "Amina Touré",
-    phone: "+225 07 12 34 56 78",
+    phone: "+228 90 12 34 56",
     email: "amina.toure@email.com",
     joinDate: "Janvier 2024",
     accountLevel: "Compte Vérifié",
@@ -104,7 +104,20 @@ const Profile = () => {
         </Card>
 
         {/* Logout button */}
-        <ProfileLogoutSection onLogout={handleLogout} />
+        <ConfirmDialogButton
+          title="Se déconnecter ?"
+          description="Êtes-vous sûr de vouloir vous déconnecter de votre compte Zongo Pay ?"
+          confirmLabel="Se déconnecter"
+          cancelLabel="Annuler"
+          onConfirm={handleLogout}
+          variant="outline"
+          className="w-full border-destructive text-destructive hover:bg-destructive/10"
+        >
+          <>
+            <LogOut className="mr-2 w-5 h-5" />
+            Se déconnecter
+          </>
+        </ConfirmDialogButton>
 
         {/* App version */}
         <div className="text-center space-y-2 pt-4">

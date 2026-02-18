@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Camera, Zap } from "lucide-react";
-import { toast } from "sonner";
 import { getProfileInitials } from "@/lib/utils";
 import ScanHeader from "@/components/scan/ScanHeader";
 import ScanFrame from "@/components/scan/ScanFrame";
+import { useToast } from "@/hooks/use-toast";
 import QrScanner from "qr-scanner";
 import qrWorkerUrl from "qr-scanner/qr-scanner-worker.min.js?url";
 
@@ -16,6 +16,7 @@ type BarcodeDetectorLike = {
 
 const Scan = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [scanning, setScanning] = useState(false);
   const [requesting, setRequesting] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
@@ -68,7 +69,10 @@ const Scan = () => {
       }).getCapabilities?.();
       if (!caps || !("torch" in caps)) {
         setCanUseTorch(false);
-        toast.error("Flash non disponible sur cet appareil");
+        toast({
+          variant: "destructive",
+          description: "Flash non disponible sur cet appareil",
+        });
         return;
       }
       await track.applyConstraints({
@@ -76,7 +80,10 @@ const Scan = () => {
       } as unknown as MediaTrackConstraints);
       setIsTorchOn((prev) => !prev);
     } catch {
-      toast.error("Impossible de contrôler le flash");
+      toast({
+        variant: "destructive",
+        description: "Impossible de contrôler le flash",
+      });
     }
   };
   const handleStartScan = () => {
@@ -161,7 +168,10 @@ const Scan = () => {
                   ? (result as unknown as { data?: string }).data
                   : undefined;
             if (!data) {
-              toast.error("QR code invalide");
+              toast({
+                variant: "destructive",
+                description: "QR code invalide",
+              });
               return;
             }
             stopCamera();
@@ -189,7 +199,10 @@ const Scan = () => {
         err instanceof DOMException && err.name === "NotAllowedError"
           ? "Permission caméra refusée"
           : "Impossible d'accéder à la caméra";
-      toast.error(msg);
+      toast({
+        variant: "destructive",
+        description: msg,
+      });
     } finally {
       setRequesting(false);
     }
@@ -243,7 +256,10 @@ const Scan = () => {
             const first = barcodes[0];
             const value = "rawValue" in first ? (first as { rawValue?: string }).rawValue : undefined;
             if (!value) {
-              toast.error("QR code invalide");
+              toast({
+                variant: "destructive",
+                description: "QR code invalide",
+              });
               return;
             }
             playBeep();

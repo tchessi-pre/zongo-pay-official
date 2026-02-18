@@ -1,13 +1,14 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 import { getProfileInitials } from "@/lib/utils";
 import ReceiveHeader from "@/components/receive/ReceiveHeader";
 import ReceiveQrCard from "@/components/receive/ReceiveQrCard";
 import ReceiveShareButton from "@/components/receive/ReceiveShareButton";
+import { useToast } from "@/hooks/use-toast";
 
 const Receive = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const profileInitials = getProfileInitials();
 
   const userPhone = useMemo(() => "+228 90 12 34 56", []);
@@ -15,7 +16,9 @@ const Receive = () => {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(userPhone);
-    toast.success("Numéro copié dans le presse-papier");
+    toast({
+      description: "Numéro copié dans le presse-papier",
+    });
   };
 
   const handleShare = async () => {
@@ -37,7 +40,9 @@ const Receive = () => {
 
     try {
       await navigator.share(shareData);
-      toast.success("Lien de paiement partagé");
+      toast({
+        description: "Lien de paiement partagé",
+      });
     } catch (error) {
       const isAbortError =
         error instanceof DOMException && (error.name === "AbortError" || error.name === "NotAllowedError");
@@ -45,7 +50,10 @@ const Receive = () => {
         return;
       }
 
-      toast.error("Impossible de partager, numéro copié à la place");
+      toast({
+        variant: "destructive",
+        description: "Impossible de partager, numéro copié à la place",
+      });
       handleCopy();
     }
   };
