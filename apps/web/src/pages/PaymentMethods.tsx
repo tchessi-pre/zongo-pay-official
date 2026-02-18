@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Plus, Smartphone, Building2 } from "lucide-react";
 import Header from "@/components/header/Header";
+import PaymentMethodsList from "@/components/payment/PaymentMethodsList";
 
 const PaymentMethods = () => {
   const navigate = useNavigate();
@@ -21,28 +21,15 @@ const PaymentMethods = () => {
         onBack={() => navigate("/profile")}
       />
 
-      <div className="px-6 py-6 space-y-4">
-        {paymentMethods.map((method) => {
-          const Icon = method.icon;
-          return (
-            <Card key={method.id} className="p-4 border-0 shadow-card">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center">
-                  <Icon className="w-6 h-6 text-primary" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-foreground">{method.name}</p>
-                  <p className="text-sm text-muted-foreground">{method.number}</p>
-                </div>
-                {method.primary && (
-                  <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full font-medium">
-                    Principal
-                  </span>
-                )}
-              </div>
-            </Card>
-          );
-        })}
+      <div className="px-6 py-6">
+        <PaymentMethodsList
+          methods={paymentMethods.map(({ icon, name, number, primary }) => ({
+            icon,
+            name,
+            number,
+            primary,
+          }))}
+        />
 
         <Button className="w-full mt-6" variant="outline">
           <Plus className="w-5 h-5 mr-2" />

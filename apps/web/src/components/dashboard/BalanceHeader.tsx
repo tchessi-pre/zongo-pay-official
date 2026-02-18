@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import type { ReactNode } from "react";
 import zongoLogo from "@/assets/zongo-logo.png";
+import { useAuth } from "@/auth/AuthContext";
 
 type BalanceHeaderProps = {
   balance: number;
@@ -27,7 +28,14 @@ const BalanceHeader = ({
   leftContent,
   children,
 }: BalanceHeaderProps) => {
+  const { user } = useAuth();
   const userName = useMemo(() => {
+    if (user) {
+      const first = user.firstName?.trim() || "";
+      const last = user.lastName?.trim() || "";
+      const full = [first, last].filter(Boolean).join(" ").trim();
+      return full || user.email || user.phone || "Utilisateur";
+    }
     try {
       const raw = localStorage.getItem("user");
       if (!raw) return "Utilisateur";
@@ -44,7 +52,7 @@ const BalanceHeader = ({
     } catch {
       return "Utilisateur";
     }
-  }, []);
+  }, [user]);
 
   const formatted = useMemo(() => {
     if (formatBalance) return formatBalance(balance);

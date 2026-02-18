@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import SendHeader from "@/components/send/SendHeader";
@@ -75,7 +76,6 @@ const SendMoney = () => {
         });
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scanState]);
 
   const handleSubmit = (e: React.FormEvent) => {

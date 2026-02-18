@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { PhoneAuthFormValues } from "@/components/auth/PhoneAuthForm";
 import { EmailAuthFormValues } from "@/components/auth/EmailAuthForm";
+import { useAuth } from "@/auth/AuthContext";
 
 /**
  * Méthodes possibles pour s'authentifier.
@@ -17,20 +18,6 @@ type AuthUser = {
   lastName: string;
   email: string;
   phone: string;
-};
-
-/**
- * Persiste l'utilisateur dans le localStorage.
- *
- * @param {AuthUser} user - Utilisateur à enregistrer
- * @returns {void}
- */
-const persistUser = (user: AuthUser) => {
-  try {
-    localStorage.setItem("user", JSON.stringify(user));
-  } catch {
-    return;
-  }
 };
 
 /**
@@ -75,9 +62,18 @@ export const useAuthController = (initialMode: AuthMode) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
+  const { setUser } = useAuth();
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval> | undefined;
+    if (otpSent) {
+      const startRaw = sessionStorage.getItem("otpStartAt");
+      const start = startRaw ? parseInt(startRaw, 10) : Date.now();
+      if (!startRaw) sessionStorage.setItem("otpStartAt", String(start));
+      const elapsed = Math.floor((Date.now() - start) / 1000);
+      const remaining = Math.max(60 - elapsed, 0);
+      if (remaining !== timer) setTimer(remaining);
+    }
     if (otpSent && timer > 0) {
       interval = setInterval(() => {
         setTimer((prev) => {
@@ -114,6 +110,7 @@ export const useAuthController = (initialMode: AuthMode) => {
       setOtpSent(true);
       setTimer(60);
       setCanResend(false);
+      sessionStorage.setItem("otpStartAt", String(Date.now()));
       toast({
         description: "Code OTP envoyé au " + values.phone,
       });
@@ -128,6 +125,7 @@ export const useAuthController = (initialMode: AuthMode) => {
   const handleResendOtp = () => {
     setTimer(60);
     setCanResend(false);
+    sessionStorage.setItem("otpStartAt", String(Date.now()));
     toast({
       description: "Nouveau code envoyé",
     });
@@ -170,11 +168,11 @@ export const useAuthController = (initialMode: AuthMode) => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      // Persiste l'utilisateur pour les deux cas (login et register) afin de passer la ProtectedRoute
-      persistUser(pendingUser);
+      setUser(pendingUser);
       toast({
         description: !isLogin ? "Compte créé avec succès !" : "Connexion réussie !",
       });
+      sessionStorage.removeItem("otpStartAt");
       navigate("/dashboard");
     }, 1500);
   };
@@ -203,8 +201,7 @@ export const useAuthController = (initialMode: AuthMode) => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      // Persiste l'utilisateur dans les deux cas (login et register)
-      persistUser({
+      setUser({
         firstName: values.firstName || "",
         lastName: values.lastName || "",
         email: values.email,
@@ -226,7 +223,7 @@ export const useAuthController = (initialMode: AuthMode) => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      persistUser({
+      setUser({
         firstName: "Utilisateur",
         lastName: "Google",
         email: "user@gmail.com",

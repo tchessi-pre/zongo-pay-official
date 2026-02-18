@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { NameFields } from "@/components/auth/NameFields";
 import { Eye, EyeOff } from "lucide-react";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 type EmailAuthFormValues = {
   firstName?: string;
@@ -23,7 +25,16 @@ type EmailAuthFormProps = {
 };
 
 const EmailAuthForm = ({ isLogin, loading, onSubmit, onGoogleAuth, onForgotPassword }: EmailAuthFormProps) => {
+  const schema = z.object({
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
+    email: z.string().email(),
+    password: z.string().min(6),
+    confirmPassword: isLogin ? z.string().optional() : z.string().min(6),
+  });
+
   const form = useForm<EmailAuthFormValues>({
+    resolver: zodResolver(schema),
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -57,7 +68,7 @@ const EmailAuthForm = ({ isLogin, loading, onSubmit, onGoogleAuth, onForgotPassw
           type="email"
           placeholder="exemple@email.com"
           className="rounded-xl"
-          {...form.register("email", { required: true })}
+          {...form.register("email")}
         />
       </div>
       <div className="space-y-2">
@@ -69,7 +80,7 @@ const EmailAuthForm = ({ isLogin, loading, onSubmit, onGoogleAuth, onForgotPassw
             placeholder="••••••••"
             minLength={6}
             className="rounded-xl pr-10"
-            {...form.register("password", { required: true, minLength: 6 })}
+            {...form.register("password")}
           />
           <button
             type="button"
@@ -89,7 +100,7 @@ const EmailAuthForm = ({ isLogin, loading, onSubmit, onGoogleAuth, onForgotPassw
             placeholder="••••••••"
             minLength={6}
             className="rounded-xl"
-            {...form.register("confirmPassword", { required: true, minLength: 6 })}
+            {...form.register("confirmPassword")}
           />
         </div>
       )}

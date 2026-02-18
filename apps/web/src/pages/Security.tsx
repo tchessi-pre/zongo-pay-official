@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import { Card } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
 import { Lock, Fingerprint, Smartphone, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import Header from "@/components/header/Header";
+import SettingToggleCard from "@/components/security/SettingToggleCard";
+import SettingNavCard from "@/components/security/SettingNavCard";
 
 const Security = () => {
   const navigate = useNavigate();
@@ -24,57 +24,31 @@ const Security = () => {
       />
 
       <div className="px-6 py-6 space-y-4">
-        <Card className="p-4 border-0 shadow-card">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
-                <Fingerprint className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <span className="font-medium text-foreground">Authentification biométrique</span>
-                <p className="text-sm text-muted-foreground">Face ID / Empreinte digitale</p>
-              </div>
-            </div>
-            <Switch checked={biometricEnabled} onCheckedChange={setBiometricEnabled} />
-          </div>
-        </Card>
+        <SettingToggleCard
+          icon={Fingerprint}
+          title="Authentification biométrique"
+          description="Face ID / Empreinte digitale"
+          checked={biometricEnabled}
+          onCheckedChange={setBiometricEnabled}
+        />
 
-        <Card className="p-4 border-0 shadow-card">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
-                <Smartphone className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <span className="font-medium text-foreground">Vérification en 2 étapes</span>
-                <p className="text-sm text-muted-foreground">SMS de confirmation</p>
-              </div>
-            </div>
-            <Switch checked={twoFactorEnabled} onCheckedChange={setTwoFactorEnabled} />
-          </div>
-        </Card>
+        <SettingToggleCard
+          icon={Smartphone}
+          title="Vérification en 2 étapes"
+          description="SMS de confirmation"
+          checked={twoFactorEnabled}
+          onCheckedChange={setTwoFactorEnabled}
+        />
 
         <div className="pt-4 space-y-2">
-          {securityOptions.map((option) => {
-            const Icon = option.icon;
-            return (
-              <Card
-                key={option.label}
-                className="p-4 flex items-center justify-between shadow-soft hover:shadow-card transition-shadow cursor-pointer border-0"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center">
-                    <Icon className="w-5 h-5 text-muted-foreground" />
-                  </div>
-                  <div>
-                    <span className="font-medium text-foreground">{option.label}</span>
-                    <p className="text-sm text-muted-foreground">{option.description}</p>
-                  </div>
-                </div>
-                <ChevronRight className="w-5 h-5 text-muted-foreground" />
-              </Card>
-            );
-          })}
+          {securityOptions.map((option) => (
+            <SettingNavCard
+              key={option.label}
+              icon={option.icon}
+              label={option.label}
+              description={option.description}
+            />
+          ))}
         </div>
       </div>
     </div>
