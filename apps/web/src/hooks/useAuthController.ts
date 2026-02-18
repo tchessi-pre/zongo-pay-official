@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 import { PhoneAuthFormValues } from "@/components/auth/PhoneAuthForm";
 import { EmailAuthFormValues } from "@/components/auth/EmailAuthForm";
 
@@ -74,6 +74,7 @@ export const useAuthController = (initialMode: AuthMode) => {
   const [pendingUser, setPendingUser] = useState<AuthUser | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { toast } = useToast();
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval> | undefined;
@@ -113,7 +114,9 @@ export const useAuthController = (initialMode: AuthMode) => {
       setOtpSent(true);
       setTimer(60);
       setCanResend(false);
-      toast.success("Code OTP envoyé au " + values.phone);
+      toast({
+        description: "Code OTP envoyé au " + values.phone,
+      });
     }, 1500);
   };
 
@@ -125,7 +128,9 @@ export const useAuthController = (initialMode: AuthMode) => {
   const handleResendOtp = () => {
     setTimer(60);
     setCanResend(false);
-    toast.success("Nouveau code envoyé");
+    toast({
+      description: "Nouveau code envoyé",
+    });
   };
 
   /**
@@ -149,22 +154,27 @@ export const useAuthController = (initialMode: AuthMode) => {
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (otp.length !== 6) {
-      toast.error("Veuillez entrer un code à 6 chiffres");
+      toast({
+        variant: "destructive",
+        description: "Veuillez entrer un code à 6 chiffres",
+      });
       return;
     }
     if (!pendingUser) {
-      toast.error("Aucune information utilisateur trouvée pour vérifier le code");
+      toast({
+        variant: "destructive",
+        description: "Aucune information utilisateur trouvée pour vérifier le code",
+      });
       return;
     }
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      if (!isLogin) {
-        persistUser(pendingUser);
-        toast.success("Compte créé avec succès !");
-      } else {
-        toast.success("Connexion réussie !");
-      }
+      // Persiste l'utilisateur pour les deux cas (login et register) afin de passer la ProtectedRoute
+      persistUser(pendingUser);
+      toast({
+        description: !isLogin ? "Compte créé avec succès !" : "Connexion réussie !",
+      });
       navigate("/dashboard");
     }, 1500);
   };
@@ -177,27 +187,32 @@ export const useAuthController = (initialMode: AuthMode) => {
    */
   const handleEmailFormSubmit = async (values: EmailAuthFormValues) => {
     if (!isLogin && values.password !== values.confirmPassword) {
-      toast.error("Les mots de passe ne correspondent pas");
+      toast({
+        variant: "destructive",
+        description: "Les mots de passe ne correspondent pas",
+      });
       return;
     }
     if (values.password.length < 6) {
-      toast.error("Le mot de passe doit contenir au moins 6 caractères");
+      toast({
+        variant: "destructive",
+        description: "Le mot de passe doit contenir au moins 6 caractères",
+      });
       return;
     }
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      if (!isLogin) {
-        persistUser({
-          firstName: values.firstName || "",
-          lastName: values.lastName || "",
-          email: values.email,
-          phone: "",
-        });
-        toast.success("Compte créé avec succès !");
-      } else {
-        toast.success("Connexion réussie !");
-      }
+      // Persiste l'utilisateur dans les deux cas (login et register)
+      persistUser({
+        firstName: values.firstName || "",
+        lastName: values.lastName || "",
+        email: values.email,
+        phone: "",
+      });
+      toast({
+        description: !isLogin ? "Compte créé avec succès !" : "Connexion réussie !",
+      });
       navigate("/dashboard");
     }, 1500);
   };
@@ -217,7 +232,9 @@ export const useAuthController = (initialMode: AuthMode) => {
         email: "user@gmail.com",
         phone: "",
       });
-      toast.success("Connexion Google réussie !");
+      toast({
+        description: "Connexion Google réussie !",
+      });
       navigate("/dashboard");
     }, 1500);
   };

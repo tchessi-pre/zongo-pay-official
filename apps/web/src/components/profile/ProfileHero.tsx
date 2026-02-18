@@ -67,7 +67,7 @@ const ProfileHero = ({ profileInfo }: ProfileHeroProps) => {
         <h2 className="text-2xl font-bold">{profileInfo.name}</h2>
         <div className="flex items-center justify-center gap-2 mt-2">
           <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1.5">
-            <Star className="w-3.5 h-3.5 text-yellow-300 fill-yellow-300" />
+            <Star className="w-4 h-4 text-green-500 fill-green-500" />
             <span className="text-sm font-medium">{profileInfo.accountLevel}</span>
           </div>
         </div>
