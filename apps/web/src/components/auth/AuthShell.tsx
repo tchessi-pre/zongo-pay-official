@@ -15,12 +15,12 @@ type AuthShellProps = {
 
 const AuthShell = ({ title, description, children }: AuthShellProps) => {
 	return (
-		<Card className='shadow-card border-0'>
-			<CardHeader>
+		<Card className='shadow-card border-0 max-h-[90vh] flex flex-col animate-slide-up'>
+			<CardHeader className='pb-2'>
 				<CardTitle>{title}</CardTitle>
 				<CardDescription>{description}</CardDescription>
 			</CardHeader>
-			<CardContent>{children}</CardContent>
+			<CardContent className='pt-2 overflow-y-auto'>{children}</CardContent>
 		</Card>
 	);
 };

@@ -10,7 +10,7 @@ const Receive = () => {
   const navigate = useNavigate();
   const profileInitials = getProfileInitials();
 
-  const userPhone = useMemo(() => "+225 07 12 34 56 78", []);
+  const userPhone = useMemo(() => "+228 90 12 34 56", []);
   const qrData = useMemo(() => `zongo://pay/${userPhone}`, [userPhone]);
 
   const handleCopy = () => {

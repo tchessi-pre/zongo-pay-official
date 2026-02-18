@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
   Send,
   QrCode,
-  Users,
+  User,
   ArrowDownLeft,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -52,6 +52,24 @@ const RECENT_TRANSACTIONS: Transaction[] = [
     reference: "TXN-2024-003",
     status: "Complété",
   },
+  {
+    id: 4,
+    name: "Cagnotte sky",
+    amount: 25000,
+    type: "received",
+    date: "Hier, 16:45",
+    reference: "TXN-2024-003",
+    status: "Complété",
+  },
+  {
+    id: 5,
+    name: "Cagnotte anniv",
+    amount: 30000,
+    type: "received",
+    date: "Hier, 16:45",
+    reference: "TXN-2024-003",
+    status: "Complété",
+  },
 ];
 
 const Dashboard = () => {
@@ -64,18 +82,17 @@ const Dashboard = () => {
     { icon: Send, label: "Envoyer", path: "/send", color: "gradient-card" },
     { icon: QrCode, label: "Scanner", path: "/scan", color: "gradient-success" },
     { icon: ArrowDownLeft, label: "Recevoir", path: "/receive", color: "bg-primary" },
-    { icon: Users, label: "Cagnottes", path: "/cagnottes", color: "bg-success" },
+    { icon: User, label: "Profil", path: "/profile", color: "bg-success" },
   ];
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-36">
       <BalanceHeader
         balance={balance}
         profileInitials={profileInitials}
         onProfileClick={() => navigate("/profile")}
       />
 
-      <QuickActions actions={quickActions} onNavigate={(p) => navigate(p)} />
       <TransactionsList
         transactions={RECENT_TRANSACTIONS}
         onSelect={(tx) => setSelectedTransaction(tx)}
@@ -85,6 +102,8 @@ const Dashboard = () => {
         transaction={selectedTransaction}
         onOpenChange={() => setSelectedTransaction(null)}
       />
+
+      <QuickActions actions={quickActions} onNavigate={(p) => navigate(p)} />
     </div>
   );
 };

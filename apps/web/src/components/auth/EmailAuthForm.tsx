@@ -109,8 +109,8 @@ const EmailAuthForm = ({ isLogin, loading, onSubmit, onGoogleAuth, onForgotPassw
       <Button type="submit" className="w-full" size="lg" disabled={loading}>
         {loading ? (isLogin ? "Connexion..." : "Création...") : (isLogin ? "Se connecter" : "Créer mon compte")}
       </Button>
-      {/* <Divider /> */}
-      {/* <GoogleButton loading={loading} onClick={onGoogleAuth} />  */}
+      <Divider />
+      <GoogleButton loading={loading} onClick={onGoogleAuth} /> 
     </form>
   );
 };

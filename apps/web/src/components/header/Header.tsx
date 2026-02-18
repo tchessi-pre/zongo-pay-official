@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import zongoLogo from "@/assets/zongo-logo.png";
 
 type HeaderProps = {
   title?: string;
@@ -29,9 +29,6 @@ export default function Header({
   containerClassName,
   titleClassName,
   children,
-  profileImageUrl,
-  profileInitials,
-  onProfileClick,
 }: HeaderProps) {
   const isGradient = variant === "gradient";
   const containerBase = isGradient
@@ -67,23 +64,11 @@ export default function Header({
         </div>
         {right ? (
           <div className="ml-auto">{right}</div>
-        ) : profileImageUrl !== undefined || profileInitials ? (
+        ) : (
           <div className="ml-auto">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onProfileClick}
-              className={isGradient ? "hover:bg-white/10" : "hover:bg-muted"}
-            >
-              <Avatar className={cn("h-9 w-9", isGradient ? "border-2 border-white/30" : "")}>
-                <AvatarImage src={profileImageUrl} alt="Profil" />
-                <AvatarFallback>
-                  {(profileInitials || "U").slice(0, 2).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-            </Button>
+            {/* <img src={zongoLogo} alt="Zongo Pay" className="h-10 rounded-full" /> */}
           </div>
-        ) : null}
+        )}
       </div>
       {children}
     </div>

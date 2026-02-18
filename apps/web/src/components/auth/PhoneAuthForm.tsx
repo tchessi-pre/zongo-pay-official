@@ -90,8 +90,8 @@ const PhoneAuthForm = ({ isLogin, loading, onSubmit, onGoogleAuth }: PhoneAuthFo
       <Button type="submit" className="w-full" size="lg" disabled={loading}>
         {loading ? "Envoi..." : "Recevoir le code OTP"}
       </Button>
-      {/* <Divider /> */}
-      {/* <GoogleButton loading={loading} onClick={onGoogleAuth} /> */}
+      <Divider />
+      <GoogleButton loading={loading} onClick={onGoogleAuth} />
     </form>
   );
 };
