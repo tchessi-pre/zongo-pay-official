@@ -2,8 +2,6 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Divider } from "@/components/auth/Divider";
-import { GoogleButton } from "@/components/auth/GoogleButton";
 import { NameFields } from "@/components/auth/NameFields";
 
 type PhoneAuthFormValues = {
@@ -90,8 +88,6 @@ const PhoneAuthForm = ({ isLogin, loading, onSubmit, onGoogleAuth }: PhoneAuthFo
       <Button type="submit" className="w-full" size="lg" disabled={loading}>
         {loading ? "Envoi..." : "Recevoir le code OTP"}
       </Button>
-      <Divider />
-      <GoogleButton loading={loading} onClick={onGoogleAuth} />
     </form>
   );
 };
