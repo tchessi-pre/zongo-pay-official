@@ -80,7 +80,7 @@ const PhoneAuthForm = ({ isLogin, loading, onSubmit, onGoogleAuth }: PhoneAuthFo
               const v = e.target.value.replace(/\D/g, "").slice(0, 8);
               form.setValue("phone", v, { shouldDirty: true, shouldTouch: true });
             }}
-            {...form.register("phone", { required: true })}
+            {...form.register("phone", { required: true, minLength: 4 })}
           />
         </div>
         <p className="text-xs text-muted-foreground">Format: 90 12 34 56</p>
