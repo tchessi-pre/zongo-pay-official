@@ -11,7 +11,7 @@ type ReceiveQrCardProps = {
 
 const ReceiveQrCard = ({ qrData, phone, onCopy }: ReceiveQrCardProps) => {
   return (
-    <Card className="p-8 shadow-card border-0">
+    <Card className="p-4 shadow-card border-0">
       <div className="text-center space-y-6">
         <div className="space-y-2">
           <h2 className="text-xl font-bold text-foreground">Scannez mon QR code</h2>
@@ -20,7 +20,7 @@ const ReceiveQrCard = ({ qrData, phone, onCopy }: ReceiveQrCardProps) => {
           </p>
         </div>
         <div className="flex justify-center w-full">
-          <div className="bg-white p-4 sm:p-8 rounded-3xl shadow-soft">
+          <div className="bg-white p-2 sm:p-4 rounded-3xl shadow-soft">
             <QRCodeSVG
               value={qrData}
               size={200}

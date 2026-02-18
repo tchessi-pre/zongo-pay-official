@@ -20,15 +20,15 @@ function TransactionsList<T extends TransactionCommon = TransactionCommon>({
   onSelect,
 }: TransactionsListProps<T>) {
   return (
-    <div className="mt-8 px-6">
-      <div className="flex items-center justify-between mb-4">
+    <div className="mt-8 px-6 max-h-[calc(100vh-18rem)] overflow-y-auto">
+      <div className="flex items-center justify-between sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 py-2">
         <h2 className="text-xl font-bold text-foreground">Transactions récentes</h2>
         <Button variant="link" className="text-primary">
           Voir tout
         </Button>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-3 pr-1">
         {transactions.map((transaction) => (
           <Card
             key={transaction.id}
