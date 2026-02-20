@@ -107,5 +107,30 @@ export const schemas = {
         example: 300
       }
     }
+  },
+  MeResponse: {
+    type: "object",
+    properties: {
+      user: {
+        type: "object",
+        properties: {
+          id: { type: "string", format: "uuid" },
+          phone: { type: "string" },
+          fullName: { type: "string" }
+        }
+      },
+      wallets: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            id: { type: "string", format: "uuid" },
+            balance: { type: "number" },
+            currency: { type: "string", example: "XOF" },
+            provider: { type: "string", example: "MAIN" }
+          }
+        }
+      }
+    }
   }
 }

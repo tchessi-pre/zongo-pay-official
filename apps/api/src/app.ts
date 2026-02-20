@@ -9,6 +9,7 @@ import { openApiSpec } from './openapi/index.js'
 import { prisma } from './db.js'
 import authRegisterRoutes from './routes/auth/register.js'
 import authLoginRoutes from './routes/auth/login.js'
+import meRoutes from './routes/me.js'
 
 export const app = new Hono()
 
@@ -49,6 +50,7 @@ app.get('/health', (c) =>
 
 app.route('/api/auth', authRegisterRoutes)
 app.route('/api/auth', authLoginRoutes)
+app.route('/api/me', meRoutes)
 
 app.get('/openapi.json', (c) => c.json(openApiSpec))
 app.get(
