@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String   @id @default(uuid())
+  phone          String   @unique
+  email          String?  @unique
+  fullName       String
+  pinHash        String
+  avatarInitials String?
+  status         String   @default("ACTIVE")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now())
+}
+
+model Wallet {
+  id          String   @id @default(uuid())
+  userId      String
+  provider    String
+  balance     Decimal  @default(0)
+  currency    String   @default("XOF")
+  phoneNumber String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+}
+
+model Transaction {
+  id           String   @id @default(uuid())
+  reference    String   @unique
+  type         String
+  status       String
+  amount       Decimal
+  currency     String   @default("XOF")
+  fromUserId   String?
+  toUserId     String?
+  fromWalletId String?
+  toWalletId   String?
+  direction    String
+  description  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now())
+}
+
+model PaymentRequest {
+  id           String   @id @default(uuid())
+  code         String   @unique
+  ownerUserId  String
+  amount       Decimal?
+  currency     String   @default("XOF")
+  provider     String?
+  phoneNumber  String?
+  isSingleUse  Boolean  @default(false)
+  maxUses      Int?
+  usesCount    Int      @default(0)
+  expiresAt    DateTime?
+  status       String   @default("ACTIVE")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now())
+}
+
+model Pool {
+  id            String   @id @default(uuid())
+  ownerUserId   String
+  title         String
+  description   String?
+  targetAmount  Decimal?
+  currentAmount Decimal  @default(0)
+  status        String   @default("OPEN")
+  deadline      DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now())
+}
+
+model PoolContribution {
+  id           String   @id @default(uuid())
+  poolId       String
+  fromUserId   String
+  amount       Decimal
+  currency     String   @default("XOF")
+  transactionId String?
+  createdAt    DateTime @default(now())
+}
+
+model SecuritySettings {
+  id                 String   @id @default(uuid())
+  userId             String   @unique
+  biometricEnabled   Boolean  @default(false)
+  twoFactorEnabled   Boolean  @default(false)
+  deviceLockRequired Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @default(now())
+}
