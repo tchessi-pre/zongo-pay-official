@@ -6,6 +6,15 @@ import type { RegisterDto, LoginDto, LoginVerifyDto } from '../dto/auth.dto.js'
 
 const jwtSecret = process.env.JWT_SECRET ?? 'dev-secret'
 
+/**
+ * Builds the authentication response object containing user details, wallets, and an access token.
+ * 
+ * @function
+ * @name buildAuthResponse
+ * @kind function
+ * @param {{ id: string phone: string fullName: string }} user
+ * @returns {Promise<{ user: { id: string; phone: string; fullName: string; }; wallets: { id: string; balance: Decimal; currency: string; provider: string; }[]; accessToken: string; }>}
+ */
 function buildAuthResponse(user: { id: string; phone: string; fullName: string }) {
   return prisma.wallet.findMany({
     where: { userId: user.id }
@@ -36,6 +45,17 @@ function buildAuthResponse(user: { id: string; phone: string; fullName: string }
   })
 }
 
+/**
+ * Registers a new user with the provided phone number, full name, and PIN.
+ * 
+ * @async
+ * @function
+ * @name registerUser
+ * @kind function
+ * @param {{ phone: string full_name: string pin: string }} data
+ * @returns {Promise<{ user: { id: string; phone: string; fullName: string; }; wallets: { id: string; balance: Decimal; currency: string; provider: string; }[]; accessToken: string; }>}
+ * @exports
+ */
 export async function registerUser(data: RegisterDto) {
   const existing = await prisma.user.findUnique({
     where: { phone: data.phone }
@@ -67,6 +87,17 @@ export async function registerUser(data: RegisterDto) {
   return buildAuthResponse(user)
 }
 
+/**
+ * Initiates the login process by validating the user's phone and PIN, then generates and sends an OTP code for verification.
+ * 
+ * @async
+ * @function
+ * @name startLogin
+ * @kind function
+ * @param {{ phone: string pin: string }} data
+ * @returns {Promise<{ status: string; phone: string; code: string; expiresInSeconds: number; }>}
+ * @exports
+ */
 export async function startLogin(data: LoginDto) {
   const user = await prisma.user.findUnique({
     where: { phone: data.phone }
@@ -92,6 +123,17 @@ export async function startLogin(data: LoginDto) {
   }
 }
 
+/**
+ * Verifies the OTP code sent during login and returns the authenticated user data along with their wallets and access token.
+ * 
+ * @async
+ * @function
+ * @name verifyLoginCode
+ * @kind function
+ * @param {{ phone: string code: string }} data
+ * @returns {Promise<{ user: { id: string; phone: string; fullName: string; }; wallets: { id: string; balance: Decimal; currency: string; provider: string; }[]; accessToken: string; }>}
+ * @exports
+ */
 export async function verifyLoginCode(data: LoginVerifyDto) {
   const result = verifyOtp(data.phone, data.code)
 
