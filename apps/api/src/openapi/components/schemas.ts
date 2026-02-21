@@ -108,6 +108,164 @@ export const schemas = {
       }
     }
   },
+  TransactionSendRequest: {
+    type: "object",
+    required: ["amount"],
+    properties: {
+      to_phone: {
+        type: "string",
+        example: "+22890123456"
+      },
+      to_user_id: {
+        type: "string",
+        format: "uuid"
+      },
+      amount: {
+        type: "number",
+        example: 10000
+      },
+      provider: {
+        type: "string",
+        example: "TMONEY"
+      },
+      source_wallet_id: {
+        type: "string",
+        format: "uuid"
+      }
+    }
+  },
+  TransactionSendResponse: {
+    type: "object",
+    properties: {
+      transaction: {
+        type: "object",
+        properties: {
+          id: { type: "string", format: "uuid" },
+          reference: { type: "string", example: "TX-123456789-0001" },
+          type: { type: "string", example: "SEND" },
+          status: { type: "string", example: "SUCCEEDED" },
+          amount: { type: "number", example: 10000 },
+          currency: { type: "string", example: "XOF" },
+          direction: { type: "string", example: "OUT" },
+          createdAt: { type: "string", format: "date-time" }
+        }
+      },
+      fromWallet: {
+        type: "object",
+        properties: {
+          id: { type: "string", format: "uuid" },
+          balance: { type: "number" },
+          currency: { type: "string", example: "XOF" },
+          provider: { type: "string", example: "MAIN" }
+        }
+      },
+      toWallet: {
+        anyOf: [
+          {
+            type: "object",
+            properties: {
+              id: { type: "string", format: "uuid" },
+              balance: { type: "number" },
+              currency: { type: "string", example: "XOF" },
+              provider: { type: "string", example: "MAIN" }
+            }
+          },
+          {
+            type: "null"
+          }
+        ]
+      }
+    }
+  },
+  MePaymentRequestResponse: {
+    type: "object",
+    properties: {
+      code: {
+        type: "string",
+        example: "PR-1729586768000-000000123"
+      },
+      url: {
+        type: "string",
+        example: "zongo://pay/PR-1729586768000-000000123"
+      },
+      paymentRequest: {
+        type: "object",
+        properties: {
+          id: { type: "string", format: "uuid" },
+          code: { type: "string" },
+          ownerUserId: { type: "string", format: "uuid" },
+          amount: { type: "number", nullable: true },
+          currency: { type: "string", example: "XOF" },
+          provider: { type: "string", nullable: true },
+          phoneNumber: { type: "string", nullable: true },
+          isSingleUse: { type: "boolean" },
+          maxUses: { type: "integer", nullable: true },
+          usesCount: { type: "integer" },
+          expiresAt: { type: "string", format: "date-time", nullable: true },
+          status: { type: "string", example: "ACTIVE" },
+          createdAt: { type: "string", format: "date-time" },
+          updatedAt: { type: "string", format: "date-time" }
+        }
+      }
+    }
+  },
+  TransactionFromQrRequest: {
+    type: "object",
+    required: ["code"],
+    properties: {
+      code: {
+        type: "string",
+        example: "PR-1729586768000-000000123"
+      }
+    }
+  },
+  TransactionFromQrResponse: {
+    type: "object",
+    properties: {
+      paymentRequest: {
+        type: "object",
+        properties: {
+          id: { type: "string", format: "uuid" },
+          code: { type: "string" },
+          ownerUserId: { type: "string", format: "uuid" },
+          amount: { type: "number", nullable: true },
+          currency: { type: "string", example: "XOF" },
+          provider: { type: "string", nullable: true },
+          phoneNumber: { type: "string", nullable: true },
+          isSingleUse: { type: "boolean" },
+          maxUses: { type: "integer", nullable: true },
+          usesCount: { type: "integer" },
+          expiresAt: { type: "string", format: "date-time", nullable: true },
+          status: { type: "string", example: "ACTIVE" },
+          createdAt: { type: "string", format: "date-time" },
+          updatedAt: { type: "string", format: "date-time" }
+        }
+      },
+      owner: {
+        anyOf: [
+          {
+            type: "object",
+            properties: {
+              id: { type: "string", format: "uuid" },
+              phone: { type: "string" },
+              fullName: { type: "string" }
+            }
+          },
+          {
+            type: "null"
+          }
+        ]
+      },
+      suggestedTransaction: {
+        type: "object",
+        properties: {
+          to_user_id: { type: "string", format: "uuid" },
+          amount: { type: "number", nullable: true },
+          provider: { type: "string", nullable: true }
+        }
+      }
+    }
+  },
   MeResponse: {
     type: "object",
     properties: {
