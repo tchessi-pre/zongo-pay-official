@@ -10,6 +10,8 @@ import { prisma } from './db.js'
 import authRegisterRoutes from './routes/auth/register.js'
 import authLoginRoutes from './routes/auth/login.js'
 import meRoutes from './routes/me.js'
+import fedapayWebhookRoutes from './routes/webhooks/fedapay.js'
+import transactionsRoutes from './routes/transactions.js'
 
 export const app = new Hono()
 
@@ -51,6 +53,8 @@ app.get('/health', (c) =>
 app.route('/api/auth', authRegisterRoutes)
 app.route('/api/auth', authLoginRoutes)
 app.route('/api/me', meRoutes)
+app.route('/webhooks/fedapay', fedapayWebhookRoutes)
+app.route('/api/transactions', transactionsRoutes)
 
 app.get('/openapi.json', (c) => c.json(openApiSpec))
 app.get(
