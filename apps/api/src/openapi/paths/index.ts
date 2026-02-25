@@ -4,7 +4,13 @@ import { healthDbPath } from "./healthDb.js"
 import { authRegisterPath, authLoginPath, authLoginVerifyPath } from "./auth.js"
 import { mePath } from "./me.js"
 import { fedapayWebhookPath } from "./fedapayWebhook.js"
-import { transactionsSendPath, transactionsFromQrPath } from "./transactions.js"
+import {
+  payoutsCreatePath,
+  transactionDetailPath,
+  transactionsFromQrPath,
+  transactionsListPath,
+  transactionsSendPath
+} from "./transactions.js"
 import { mePaymentRequestPath } from "./mePaymentRequest.js"
 
 export const paths = {
@@ -17,6 +23,9 @@ export const paths = {
   "/api/me": mePath,
   "/api/me/payment-request": mePaymentRequestPath,
   "/webhooks/fedapay": fedapayWebhookPath,
+  "/api/transactions": transactionsListPath,
+  "/api/transactions/{id}": transactionDetailPath,
   "/api/transactions/send": transactionsSendPath,
-  "/api/transactions/from-qr": transactionsFromQrPath
+  "/api/transactions/from-qr": transactionsFromQrPath,
+  "/api/payouts": payoutsCreatePath
 }

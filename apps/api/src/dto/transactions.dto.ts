@@ -23,3 +23,12 @@ export const transactionFromQrSchema = z.object({
 
 export type SendTransactionDto = z.infer<typeof sendTransactionSchema>
 export type TransactionFromQrDto = z.infer<typeof transactionFromQrSchema>
+
+export const createPayoutSchema = z.object({
+  to_phone: z.string().min(1),
+  amount: z.number().positive(),
+  provider: z.string().min(1),
+  source_wallet_id: z.string().min(1).optional()
+})
+
+export type CreatePayoutDto = z.infer<typeof createPayoutSchema>

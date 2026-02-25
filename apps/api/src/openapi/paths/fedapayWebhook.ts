@@ -11,7 +11,7 @@ export const fedapayWebhookPath = {
         required: true,
         schema: {
           type: "string",
-          example: "super-dev-webhook-token"
+          example: "mon-super-dev-webhook-token"
         },
         description: "Secret partagé pour sécuriser l'appel du webhook"
       }
