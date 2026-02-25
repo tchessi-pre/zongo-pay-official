@@ -31,20 +31,22 @@ model Wallet {
 }
 
 model Transaction {
-  id           String   @id @default(uuid())
-  reference    String   @unique
-  type         String
-  status       String
-  amount       Decimal
-  currency     String   @default("XOF")
-  fromUserId   String?
-  toUserId     String?
-  fromWalletId String?
-  toWalletId   String?
-  direction    String
-  description  String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @default(now())
+  id                   String   @id @default(uuid())
+  reference            String   @unique
+  type                 String
+  status               String
+  amount               Decimal
+  currency             String   @default("XOF")
+  fromUserId           String?
+  toUserId             String?
+  fromWalletId         String?
+  toWalletId           String?
+  direction            String
+  description          String?
+  providerTransactionId String?
+  providerReference     String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @default(now())
 }
 
 model PaymentRequest {

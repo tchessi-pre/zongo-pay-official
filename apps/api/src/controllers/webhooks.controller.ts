@@ -27,17 +27,6 @@ export async function fedapayWebhookController(c: Context) {
   }
 
   const payload = await c.req.json().catch(() => null)
-
-  if (!payload) {
-    return c.json(
-      {
-        code: 'INVALID_PAYLOAD',
-        message: 'Corps JSON requis'
-      },
-      400
-    )
-  }
-
   await handleFedapayWebhook(payload)
 
   return c.json({ status: 'ok' })

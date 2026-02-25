@@ -116,17 +116,15 @@ export const schemas = {
         type: "string",
         example: "+22890123456"
       },
-      to_user_id: {
-        type: "string",
-        format: "uuid"
-      },
       amount: {
         type: "number",
         example: 10000
       },
       provider: {
         type: "string",
-        example: "TMONEY"
+        description: "Mode de paiement (requis si to_phone est utilisé)",
+        enum: ["automatic", "mtn", "moov", "mtn_ci", "moov_tg", "tmoney"],
+        example: "mtn"
       },
       source_wallet_id: {
         type: "string",
@@ -174,6 +172,115 @@ export const schemas = {
             type: "null"
           }
         ]
+      },
+      provider: {
+        type: "object",
+        properties: {
+          name: { type: "string", example: "FedaPay" },
+          reference: { type: "string", nullable: true, example: "pi_xdc_123456" },
+          status: { type: "string", nullable: true, example: "pending" },
+          mode: { type: "string", nullable: true, example: "automatic" }
+        }
+      }
+    }
+  },
+  TransactionListResponse: {
+    type: "object",
+    properties: {
+      meta: {
+        type: "object",
+        properties: {
+          page: { type: "integer", example: 1 },
+          pageSize: { type: "integer", example: 20 },
+          total: { type: "integer", example: 42 }
+        }
+      },
+      items: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            id: { type: "string", format: "uuid" },
+            reference: { type: "string", example: "TX-123456789-0001" },
+            type: { type: "string", example: "SEND" },
+            status: { type: "string", example: "SUCCEEDED" },
+            amount: { type: "number", example: 10000 },
+            currency: { type: "string", example: "XOF" },
+            direction: { type: "string", example: "OUT" },
+            createdAt: { type: "string", format: "date-time" }
+          }
+        }
+      }
+    }
+  },
+  TransactionDetailResponse: {
+    type: "object",
+    properties: {
+      id: { type: "string", format: "uuid" },
+      reference: { type: "string", example: "TX-123456789-0001" },
+      type: { type: "string", example: "SEND" },
+      status: { type: "string", example: "SUCCEEDED" },
+      amount: { type: "number", example: 10000 },
+      currency: { type: "string", example: "XOF" },
+      direction: { type: "string", example: "OUT" },
+      createdAt: { type: "string", format: "date-time" }
+    }
+  },
+  PayoutCreateRequest: {
+    type: "object",
+    required: ["to_phone", "amount", "provider"],
+    properties: {
+      to_phone: {
+        type: "string",
+        example: "+22890123456"
+      },
+      amount: {
+        type: "number",
+        example: 10000
+      },
+      provider: {
+        type: "string",
+        description: "Mode de paiement Mobile Money",
+        enum: ["mtn", "moov", "mtn_ci", "moov_tg", "tmoney"],
+        example: "mtn"
+      },
+      source_wallet_id: {
+        type: "string",
+        format: "uuid"
+      }
+    }
+  },
+  PayoutCreateResponse: {
+    type: "object",
+    properties: {
+      transaction: {
+        type: "object",
+        properties: {
+          id: { type: "string", format: "uuid" },
+          reference: { type: "string", example: "TX-123456789-0001" },
+          type: { type: "string", example: "SEND" },
+          status: { type: "string", example: "SUCCEEDED" },
+          amount: { type: "number", example: 10000 },
+          currency: { type: "string", example: "XOF" },
+          direction: { type: "string", example: "OUT" },
+          createdAt: { type: "string", format: "date-time" }
+        }
+      },
+      fromWallet: {
+        type: "object",
+        properties: {
+          id: { type: "string", format: "uuid" },
+          balance: { type: "number" },
+          currency: { type: "string", example: "XOF" },
+          provider: { type: "string", example: "MAIN" }
+        }
+      },
+      provider: {
+        type: "object",
+        properties: {
+          name: { type: "string", example: "FedaPay" },
+          reference: { type: "string", nullable: true, example: "po_xdc_123456" }
+        }
       }
     }
   },

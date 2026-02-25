@@ -12,6 +12,8 @@ import authLoginRoutes from './routes/auth/login.js'
 import meRoutes from './routes/me.js'
 import fedapayWebhookRoutes from './routes/webhooks/fedapay.js'
 import transactionsRoutes from './routes/transactions.js'
+import { authMiddleware } from './middlewares/auth.middleware.js'
+import { createPayoutController } from './controllers/transactions.controller.js'
 
 export const app = new Hono()
 
@@ -55,6 +57,7 @@ app.route('/api/auth', authLoginRoutes)
 app.route('/api/me', meRoutes)
 app.route('/webhooks/fedapay', fedapayWebhookRoutes)
 app.route('/api/transactions', transactionsRoutes)
+app.post('/api/payouts', authMiddleware, createPayoutController)
 
 app.get('/openapi.json', (c) => c.json(openApiSpec))
 app.get(
