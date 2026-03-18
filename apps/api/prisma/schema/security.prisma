@@ -1,0 +1,9 @@
+model SecuritySettings {
+  id                 String   @id @default(uuid())
+  userId             String   @unique
+  biometricEnabled   Boolean  @default(false)
+  twoFactorEnabled   Boolean  @default(false)
+  deviceLockRequired Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @default(now())
+}

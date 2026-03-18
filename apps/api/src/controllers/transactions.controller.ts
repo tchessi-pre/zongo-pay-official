@@ -272,6 +272,16 @@ export async function createPayoutController(c: Context) {
       )
     }
 
+    if (error instanceof Error && error.message === 'USER_NOT_FOUND') {
+      return c.json(
+        {
+          code: 'USER_NOT_FOUND',
+          message: 'Utilisateur introuvable'
+        },
+        404
+      )
+    }
+
     if (error instanceof Error && error.message === 'INSUFFICIENT_FUNDS') {
       return c.json(
         {

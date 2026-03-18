@@ -8,14 +8,15 @@
 		"build": "tsc -p tsconfig.json",
 		"start": "node dist/index.js",
 		"typecheck": "tsc -p tsconfig.json --noEmit",
-		"prisma:migrate": "prisma migrate dev --name init",
-		"prisma:generate": "prisma generate"
+		"prisma:migrate": "prisma migrate dev --name init --schema=prisma/schema",
+		"prisma:generate": "prisma generate --schema=prisma/schema"
 	},
 	"dependencies": {
 		"@hono/node-server": "^1.12.0",
 		"@hono/swagger-ui": "^0.5.3",
 		"@prisma/client": "^5.22.0",
 		"bcryptjs": "^2.4.3",
+		"fedapay": "^1.2.5",
 		"hono": "^4.6.7",
 		"jsonwebtoken": "^9.0.2",
 		"zod": "^3.23.8"
@@ -27,5 +28,8 @@
 		"prisma": "^5.20.0",
 		"tsx": "^4.16.0",
 		"typescript": "^5.6.2"
+	},
+	"prisma": {
+		"schema": "prisma/schema"
 	}
 }

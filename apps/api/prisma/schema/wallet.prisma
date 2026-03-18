@@ -1,0 +1,10 @@
+model Wallet {
+  id          String   @id @default(uuid())
+  userId      String
+  provider    String
+  balance     Decimal  @default(0)
+  currency    String   @default("XOF")
+  phoneNumber String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+}

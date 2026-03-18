@@ -8,8 +8,6 @@ import {
   sendFedapayPayment
 } from '../clients/fedapay.client.js'
 
-const isPayoutMockEnabled = process.env.FEDAPAY_PAYOUTS_MOCK === 'true'
-
 function generateReference() {
   return `TX-${Date.now()}-${Math.floor(Math.random() * 10000)
     .toString()
@@ -49,6 +47,14 @@ function extractFedapayIdentifiers(payload: unknown) {
 }
 
 export async function sendPayout(userId: string, data: CreatePayoutDto) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId }
+  })
+
+  if (!user) {
+    throw new Error('USER_NOT_FOUND')
+  }
+
   const amountDecimal = new Prisma.Decimal(data.amount)
 
   const sourceWallet =
@@ -76,21 +82,39 @@ export async function sendPayout(userId: string, data: CreatePayoutDto) {
     throw new Error('INSUFFICIENT_FUNDS')
   }
 
+  const isPayoutMockEnabled = process.env.FEDAPAY_PAYOUTS_MOCK === 'true'
+  console.log(`[Payout] Mock mode: ${isPayoutMockEnabled} (env: ${process.env.FEDAPAY_PAYOUTS_MOCK})`)
+
   const payoutInfo = isPayoutMockEnabled
     ? {
-        id: undefined as string | undefined,
-        reference: generateReference()
-      }
-    : extractFedapayIdentifiers(
-        await createFedapayPayout({
+      id: undefined as string | undefined,
+      reference: generateReference()
+    }
+    : await (async () => {
+      try {
+        // Split full name into first and last name
+        const nameParts = user.fullName.trim().split(/\s+/)
+        const lastname = nameParts.length > 1 ? nameParts.pop() : ''
+        const firstname = nameParts.join(' ') || user.fullName
+
+        const response = await createFedapayPayout({
           amount: data.amount,
           currency: sourceWallet.currency,
           customerPhone: data.to_phone,
+          firstname,
+          lastname,
+          email: user.email ?? undefined,
           mode: data.provider,
           description: `Retrait vers ${data.to_phone}`,
           merchantReference: generateReference()
         })
-      )
+        console.log('[FedaPay Payout] Response:', JSON.stringify(response, null, 2))
+        return extractFedapayIdentifiers(response)
+      } catch (error) {
+        console.error('[FedaPay Payout] Error:', error)
+        throw error
+      }
+    })()
 
   const result = await prisma.$transaction(async (tx) => {
     const freshSourceWallet = await tx.wallet.findUnique({
@@ -193,6 +217,7 @@ export async function sendTransaction(userId: string, data: SendTransactionDto) 
 
   let recipientUserId: string | null = null
   let recipientWalletId: string | null = null
+  let recipientUser: { id: string; fullName: string; email: string | null; phone: string } | null = null
 
   if (data.to_user_id) {
     const user = await prisma.user.findUnique({
@@ -203,6 +228,7 @@ export async function sendTransaction(userId: string, data: SendTransactionDto) 
       throw new Error('RECIPIENT_NOT_FOUND')
     }
 
+    recipientUser = user
     recipientUserId = user.id
 
     const wallet = await prisma.wallet.findFirst({
@@ -226,6 +252,7 @@ export async function sendTransaction(userId: string, data: SendTransactionDto) 
       throw new Error('RECIPIENT_NOT_FOUND')
     }
 
+    recipientUser = user
     recipientUserId = user.id
 
     const wallet = await prisma.wallet.findFirst({
@@ -250,10 +277,29 @@ export async function sendTransaction(userId: string, data: SendTransactionDto) 
   let fedapaySendResult: unknown = null
 
   if (data.to_phone) {
+    let firstname: string | undefined
+    let lastname: string | undefined
+    let email: string | undefined
+
+    const user =
+      recipientUser && recipientUser.phone === data.to_phone
+        ? recipientUser
+        : await prisma.user.findUnique({ where: { phone: data.to_phone } })
+
+    if (user) {
+      const nameParts = user.fullName.trim().split(/\s+/)
+      lastname = nameParts.length > 1 ? nameParts.pop() : ''
+      firstname = nameParts.join(' ') || user.fullName
+      email = user.email ?? undefined
+    }
+
     const fedapayPayload = await createFedapayCollect({
       amount: data.amount,
       currency: sourceWallet.currency,
       customerPhone: data.to_phone,
+      firstname,
+      lastname,
+      email,
       provider: data.provider,
       description:
         data.to_user_id != null
