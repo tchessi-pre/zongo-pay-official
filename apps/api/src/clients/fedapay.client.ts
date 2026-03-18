@@ -1,4 +1,8 @@
 import { authHeaders } from './fedapay.http.js'
+import fedapay from 'fedapay'
+
+const { FedaPay, Payout } = fedapay
+
 const fedapayApiBaseUrl = process.env.FEDAPAY_API_BASE_URL ?? ''
 const fedapaySecretKey = process.env.FEDAPAY_SECRET_KEY ?? ''
 const fedapayCallbackUrl = process.env.FEDAPAY_CALLBACK_URL ?? ''
@@ -7,6 +11,9 @@ type FedapayCollectParams = {
   amount: number
   currency: string
   customerPhone: string
+  firstname?: string
+  lastname?: string
+  email?: string
   provider?: string
   description?: string
 }
@@ -24,6 +31,9 @@ type FedapayPayoutParams = {
   amount: number
   currency: string
   customerPhone: string
+  firstname?: string
+  lastname?: string
+  email?: string
   mode: string
   description?: string
   merchantReference?: string
@@ -53,6 +63,9 @@ function buildFedapayBody(params: FedapayCollectParams) {
     description: params.description,
     callback_url: fedapayCallbackUrl,
     customer: {
+      firstname: params.firstname,
+      lastname: params.lastname,
+      email: params.email,
       phone_number: {
         number: params.customerPhone,
         country: 'tg'
@@ -69,6 +82,9 @@ function buildFedapayPayoutBody(params: FedapayPayoutParams) {
     description: params.description,
     merchant_reference: params.merchantReference,
     customer: {
+      firstname: params.firstname,
+      lastname: params.lastname,
+      email: params.email,
       phone_number: {
         number: params.customerPhone,
         country: 'tg'
@@ -175,20 +191,23 @@ export async function createFedapayPayout(params: FedapayPayoutParams) {
     throw new Error('FEDAPAY_CONFIG_MISSING')
   }
 
-  const url = buildFedapayPayoutsUrl()
+  // Initialize FedaPay SDK
+  FedaPay.setApiKey(fedapaySecretKey)
+  FedaPay.setEnvironment(process.env.FEDAPAY_ENV ?? 'sandbox')
+
   const body = buildFedapayPayoutBody(params)
 
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: authHeaders(true),
-    body: JSON.stringify(body)
-  })
-
-  const text = await response.text().catch(() => '')
-
-  if (!response.ok) {
-    throw buildFedapayError(response, text)
+  try {
+    const payout = await Payout.create(body)
+    return payout
+  } catch (error: any) {
+    console.error('[FedaPay SDK Error]', error)
+    if (error.response) {
+      console.error('[FedaPay SDK Error Response]', JSON.stringify(error.response.data || error.response, null, 2))
+    }
+    const clientError = new Error('FEDAPAY_API_ERROR') as FedapayClientError
+    clientError.status = error.httpStatus || error.response?.status || 500
+    clientError.details = error.response?.data || error.message || error
+    throw clientError
   }
-
-  return parseJsonOrText(text)
 }

@@ -1,0 +1,22 @@
+model Pool {
+  id            String   @id @default(uuid())
+  ownerUserId   String
+  title         String
+  description   String?
+  targetAmount  Decimal?
+  currentAmount Decimal  @default(0)
+  status        String   @default("OPEN")
+  deadline      DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now())
+}
+
+model PoolContribution {
+  id           String   @id @default(uuid())
+  poolId       String
+  fromUserId   String
+  amount       Decimal
+  currency     String   @default("XOF")
+  transactionId String?
+  createdAt    DateTime @default(now())
+}

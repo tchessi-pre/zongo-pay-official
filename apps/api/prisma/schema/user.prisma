@@ -1,0 +1,11 @@
+model User {
+  id             String   @id @default(uuid())
+  phone          String   @unique
+  email          String?  @unique
+  fullName       String
+  pinHash        String
+  avatarInitials String?
+  status         String   @default("ACTIVE")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now())
+}
